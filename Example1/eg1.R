@@ -2,6 +2,7 @@
 ## DATA IS SAVED IN "eg1-raw.csv"
 ## 
 
+library(kableExtra)
 
 ## DATA PREPROCESS
 example1 <- read.csv("eg1-raw.csv")
@@ -31,3 +32,19 @@ axis(1, at = 1:10, labels = p)
 legend("bottomright", legend = c("The MC bound", "The CJ bound"), 
        pch=c(1,2), cex = 1.2)
 dev.off()
+
+## TABLE1
+
+tab1 <- cbind.data.frame(p = p, b.MC, b.CJ)
+sink("tab1.tex")
+kbl(tab1, 
+    format = "latex",
+    longtable = F, 
+    booktabs = T, 
+    linesep = "\\hline",
+    digits = 3,
+    align = "r",
+    escape = FALSE,
+    caption = "The values of the MC bound and the CJ bound in Example 1",
+    label = "tab1")
+sink()
