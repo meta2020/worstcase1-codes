@@ -112,6 +112,7 @@ proc optmodel Printlevel=0;
 
  	read data dat12 into [_n_] zk=z;
 
+	/* CONSTAINTS (1)-(4) */
    con cons1 {i in 1..s, j in 1..k}: 	0<=psk[i,j]<=1;
    con cons2 {i in 1..s}: 				0<=ps[i]<=1;
    
@@ -120,7 +121,7 @@ proc optmodel Printlevel=0;
 
 	/* ASSUMPTION1 */
    con cons5 {i in 1..(s-1)}: 			ps[i]<=ps[i+1]; 
-
+	/* MAXIMUM OF b*/
    max maxb = 1/si2*(1/k)*sum{i in 1..s, j in 1..k} precision[i]*zk[j]*psk[i,j]/ps[i];
 
    solve;
