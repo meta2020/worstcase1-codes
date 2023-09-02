@@ -1,31 +1,36 @@
-**************************************************;
-* MC BOUND FOR EXAMPLE 1
-*****************************************************;
 
+/*WORST-CASE BOUND OF META-ANALYSIS OF INTERVENTION*/
+/*EXAMPLE 1*/
 
+/*CLOSE ALL NOTES*/
 ods _all_ close;
 options nonotes;
 
-
-data dat1;
-input study y precision;
-datalines;
-	1   -1.55 1.57
-	2   -1.49 1.07
-	3   -1.33 1.71
-	4   -0.35 2.72
-	5   -0.19 1.98
-	6   -0.43 1.88
-	7   -0.61 2.11
-	8   -0.97 1.48
-	9   -1.64 1.10
-	10  -1.19 0.60
-	11  -0.28 1.47
-	12   0.03 2.00
-	13  -0.06 3.90
-	14  -0.54 4.56
-	;
-	run;
+/*IMPORT raw data*/
+proc import  out=dat1 
+datafile = "C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\Example1\eg1-raw.csv"
+dbms = csv replace;
+getnames = yes;
+run;
+/*data dat1;*/
+/*input study y precision;*/
+/*datalines;*/
+/*	1   -1.55 1.57*/
+/*	2   -1.49 1.07*/
+/*	3   -1.33 1.71*/
+/*	4   -0.35 2.72*/
+/*	5   -0.19 1.98*/
+/*	6   -0.43 1.88*/
+/*	7   -0.61 2.11*/
+/*	8   -0.97 1.48*/
+/*	9   -1.64 1.10*/
+/*	10  -1.19 0.60*/
+/*	11  -0.28 1.47*/
+/*	12   0.03 2.00*/
+/*	13  -0.06 3.90*/
+/*	14  -0.54 4.56*/
+/*	;*/
+/*	run;*/
 proc univariate data=dat1 noprint;
 	var study;
 	output out=n_study n=s;
@@ -144,6 +149,14 @@ data result;
 run;
 %bias1(start = 0.1 , end = 1 , by = 0.1);
 
+data result2;
+  set result;
+  if cmiss(of p)<1 ;
+run;
 
-
+/*EXPORT RESULTS*/
+proc export data=result2
+    outfile="C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\Example1\MCbounds.csv"
+    dbms=csv;
+run;
 

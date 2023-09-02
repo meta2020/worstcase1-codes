@@ -13,7 +13,7 @@ library(metafor)
 ma1 <- rma.uni(yi = y, vi = sigmasq, data = example1, method = "ML")
 ma1$b
 ma1$se
-ma1$ci.ub+b.MC
+ma1$ci.ub
 ## ANALYTICAL COPAS-JACKSON BOUND (tau=0)
 p <- seq(1, 0.1, -0.1)
 u <- qnorm(p)
@@ -49,7 +49,7 @@ dev.off()
 
 tab1 <- cbind.data.frame(p = p, sprintf("%.3f [%.3f, %.3f]",b.MC.or, b.MC.lb, b.MC.ub), 
                          sprintf("%.3f [%.3f, %.3f]",b.CJ.or, b.CJ.lb, b.CJ.ub))
-colnames(tab1) <- c("p", "The MC bound [95% CI]", "The MC bound [95% CI]")
+colnames(tab1) <- c("p", "The MC bound [95% CI]", "The CJ bound [95% CI]")
 sink("tab1.tex")
 kbl(tab1, 
     format = "latex",
