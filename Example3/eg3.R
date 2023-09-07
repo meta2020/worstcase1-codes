@@ -2,6 +2,7 @@
 ## LOAD DATA
 ##
 library(readxl)
+library(kableExtra)
 files.sources <- list.files(path = "R/")
 x <- sapply(paste0("R/", files.sources), source)
 
@@ -72,6 +73,10 @@ par3 <- data.frame(
   tau11 = par3[3]^2, tau22= par3[4]^2, tau12= prod(par3[3:5]))
 write.csv(par3, "ml-par3.csv", row.names = F)
 
+## SAUC
+sroc <- function(x) plogis(par3$theta1 - (par3$tau12/par3$tau22) * (qlogis(x) + par3$theta2))
+integrate(sroc, 0, 1)
+
 data <- data5
 y1  <- data$u_sen
 y2  <- data$u_spe 
@@ -138,13 +143,15 @@ dev.off()
 ## TABLE2
 
 p <- seq(1,0.1,-0.1)
-tab1 <- cbind.data.frame(p = p, 
-                         A = sprintf("[%.3f, %.3f]", bound1[order(-bound1$P),2], bound1[order(-bound1$P),3]), 
-                         B = sprintf("[%.3f, %.3f]", bound2[order(-bound2$P),2], bound2[order(-bound2$P),3]),
-                         C = sprintf("[%.3f, %.3f]", bound3[order(-bound3$P),2], bound3[order(-bound3$P),3]))
-colnames(tab1) <- c("p", "Constraint 4.1", "Constraint 4.2", "Constraint 4.3")
+tab1 <- cbind.data.frame(p = rep(p,2), 
+                         t = c(rep(3, 10), rep(5,10)),
+                         A = c(sprintf("[%.3f, %.3f]", bound1[order(-bound1$P),2], bound1[order(-bound1$P),3]), sprintf("[%.3f, %.3f]", bound4[order(-bound4$P),2], bound4[order(-bound4$P),3])),
+                         B = c(sprintf("[%.3f, %.3f]", bound2[order(-bound2$P),2], bound2[order(-bound2$P),3]), sprintf("[%.3f, %.3f]", bound5[order(-bound5$P),2], bound5[order(-bound5$P),3])),
+                         C = c(sprintf("[%.3f, %.3f]", bound3[order(-bound3$P),2], bound3[order(-bound3$P),3]), sprintf("[%.3f, %.3f]", bound6[order(-bound6$P),2], bound6[order(-bound6$P),3]))
+                         )
+colnames(tab1) <- c("p", "Constraint 5.1", "Constraint 5.2", "Constraint 5.3")
 
-sink("tab2.tex")
+sink("tab3.tex")
 kbl(tab1, 
     format = "latex",
     longtable = F, 
@@ -153,7 +160,7 @@ kbl(tab1,
     digits = 3,
     align = "r",
     escape = FALSE,
-    caption = "The values of the MC bound and the CJ bound in Example 1",
+    caption = "The values of the MC bound and the CJ bound in Example 3",
     label = "tab1",
     row.names = NA)
 sink()
