@@ -49,7 +49,8 @@ plot1 <- ggplot(df, aes(x = p)) +
   scale_x_reverse(n.breaks = 10, name="Overall selection probability") + 
   scale_y_continuous(limits = c(-0.75,0.5), name = "Worst-case upper bound") +
   theme(panel.background = element_rect(fill = "white", colour = "grey50"),
-        panel.grid.major = element_line(colour = "grey87"))+
+        panel.grid.major = element_line(colour = "grey87"),
+        legend.key = element_rect (fill = "white"))+
   scale_colour_manual("The upper bound", 
                       breaks = c("MC bound", "CJ bound"),
                       values = c("red", "black"),
