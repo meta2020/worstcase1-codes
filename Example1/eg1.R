@@ -20,14 +20,18 @@ u <- qnorm(p)
 b.CJ <- with(example1, {1/p*dnorm(u)*sum(precision)/sum(precision^2)})
 names(b.CJ) <- sprintf("p=%.2f", p)
 
-b.CJ
 b.CJ.or <- as.vector(ma1$b)+b.CJ
 b.CJ.ub <- b.CJ.or+qnorm(0.975)*as.vector(ma1$se)
 b.CJ.lb <- b.CJ.or-qnorm(0.975)*as.vector(ma1$se)
 
 ## IMPORT THE MC BOUND
-b.MC.result <- read.csv("MCbounds.csv")
-b.MC <- rev(b.MC.result$maxb)
+# b.MC.result <- read.csv("SASresult/result1-R10-K2000-19SEP202352272.csv")
+b.MC.result <- read.csv("SASresult/result1-R1-K2000-19SEP202353299.csv")
+
+df <- aggregate(b.MC.result[,c(4,5,6,9,10)], list(b.MC.result$p), FUN=mean) 
+
+# b.MC <- rev(b.MC.result$admaxb)
+b.MC <- rev(df$maxb2)
 names(b.MC) <- sprintf("p=%.2f", p)
 
 b.MC
@@ -40,11 +44,11 @@ df <- data.frame(p = seq(1, 0.1, -0.1),
                  b.MC.or, b.MC.ub, b.MC.lb,
                  b.CJ.or, b.CJ.ub, b.CJ.lb)
 plot1 <- ggplot(df, aes(x = p)) + 
-  geom_ribbon(mapping=aes(ymin=b.MC.ub,ymax=b.MC.lb, fill="MC bound"), colour="white", alpha=0.1)+
-  geom_ribbon(mapping=aes(ymin=b.CJ.ub,ymax=b.CJ.lb, fill="CJ bound"), colour="white", alpha=0.1)+
-  geom_line(aes(y = b.MC.or, colour="MC bound")) +
+  geom_ribbon(mapping=aes(ymin=b.MC.ub,ymax=b.MC.lb, fill="Simulation-based"), colour="white", alpha=0.1)+
+  geom_ribbon(mapping=aes(ymin=b.CJ.ub,ymax=b.CJ.lb, fill="Copas-Jackson"), colour="white", alpha=0.1)+
+  geom_line(aes(y = b.MC.or, colour="Simulation-based")) +
   geom_point(aes(y = b.MC.or), colour =2, pch=19, size=2) + 
-  geom_line(aes(y = b.CJ.or, colour="CJ bound"), lty=2) +
+  geom_line(aes(y = b.CJ.or, colour="Copas-Jackson"), lty=2) +
   geom_point(aes(y = b.CJ.or), colour =1, pch=1, size=2) + 
   scale_x_reverse(n.breaks = 10, name="Overall selection probability") + 
   scale_y_continuous(limits = c(-0.75,0.5), name = "Worst-case upper bound") +
@@ -52,14 +56,14 @@ plot1 <- ggplot(df, aes(x = p)) +
         panel.grid.major = element_line(colour = "grey87"),
         legend.key = element_rect (fill = "white"))+
   scale_colour_manual("The upper bound", 
-                      breaks = c("MC bound", "CJ bound"),
+                      breaks = c("Simulation-based", "Copas-Jackson"),
                       values = c("red", "black"),
                       guide = guide_legend(override.aes = list(lty = c(1,2))))+
   scale_fill_manual("95% CI region", 
-                      breaks = c("MC bound", "CJ bound"),
+                      breaks = c("Simulation-based", "Copas-Jackson"),
                       values = c("red", "black"),
                     guide = guide_legend(override.aes = list(color = c("white", "white"))))
-
+plot1
 ggsave(filename = "eg1.eps", plot = plot1, device = cairo_ps, 
        width = 8, height = 6) 
 
