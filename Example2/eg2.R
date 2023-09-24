@@ -38,30 +38,30 @@ sp <- plogis(mu2)
 
 
 ## BOUNDS UNDER CONDITION D1-D3
-# y1d1.dat <- read.csv("SASresult/result2-R10-K2000-c1-as1-23SEP202351067.csv")
-# y1d2.dat <- read.csv("SASresult/result2-R10-K2000-c1-as2-23SEP202353513.csv")
-# y1d3.dat <- read.csv("SASresult/result2-R10-K2000-c1-as3-23SEP202354471.csv")
+y1d1.dat <- read.csv("SASresult/result2-R10-K2000-c1-as1-23SEP202351067.csv")
+y1d2.dat <- read.csv("SASresult/result2-R10-K2000-c1-as2-23SEP202353513.csv")
+y1d3.dat <- read.csv("SASresult/result2-R10-K2000-c1-as3-23SEP202354471.csv")
+
+y2d1.dat <- read.csv("SASresult/result2-R10-K2000-c2-as1-23SEP202356785.csv")
+y2d2.dat <- read.csv("SASresult/result2-R10-K2000-c2-as2-23SEP202357572.csv")
+y2d3.dat <- read.csv("SASresult/result2-R10-K2000-c2-as3-23SEP202382616.csv")
+
+y3d1.dat <- read.csv("SASresult/result2-R10-K2000-c3-as1-23SEP202360218.csv")
+y3d2.dat <- read.csv("SASresult/result2-R10-K2000-c3-as2-23SEP202375429.csv")
+y3d3.dat <- read.csv("SASresult/result2-R10-K2000-c3-as3-23SEP202362479.csv")
+
+
+# y1d1.dat <- read.csv("SASresult/result2-R1-K2000-c1-as1-24SEP202368307.csv")
+# y1d2.dat <- read.csv("SASresult/result2-R1-K2000-c1-as2-24SEP202368518.csv")
+# y1d3.dat <- read.csv("SASresult/result2-R1-K2000-c1-as3-24SEP202368919.csv")
 # 
-# y2d1.dat <- read.csv("SASresult/result2-R10-K2000-c2-as1-23SEP202356785.csv")
-# y2d2.dat <- read.csv("SASresult/result2-R10-K2000-c2-as2-23SEP202357572.csv")
-# y2d3.dat <- read.csv("SASresult/result2-R10-K2000-c2-as3-23SEP202382616.csv")
+# y2d1.dat <- read.csv("SASresult/result2-R1-K2000-c2-as1-24SEP202369179.csv")
+# y2d2.dat <- read.csv("SASresult/result2-R1-K2000-c2-as2-24SEP202369560.csv")
+# y2d3.dat <- read.csv("SASresult/result2-R1-K2000-c2-as3-24SEP202369651.csv")
 # 
-# y3d1.dat <- read.csv("SASresult/result2-R10-K2000-c3-as1-23SEP202360218.csv")
-# y3d2.dat <- read.csv("SASresult/result2-R10-K2000-c3-as2-23SEP202375429.csv")
-# y3d3.dat <- read.csv("SASresult/result2-R10-K2000-c3-as3-23SEP202362479.csv")
-
-
-y1d1.dat <- read.csv("SASresult/result2-R1-K2000-c1-as1-24SEP202368307.csv")
-y1d2.dat <- read.csv("SASresult/result2-R1-K2000-c1-as2-24SEP202368518.csv")
-y1d3.dat <- read.csv("SASresult/result2-R1-K2000-c1-as3-24SEP202368919.csv")
-
-y2d1.dat <- read.csv("SASresult/result2-R1-K2000-c2-as1-24SEP202369179.csv")
-y2d2.dat <- read.csv("SASresult/result2-R1-K2000-c2-as2-24SEP202369560.csv")
-y2d3.dat <- read.csv("SASresult/result2-R1-K2000-c2-as3-24SEP202369651.csv")
-
-y3d1.dat <- read.csv("SASresult/result2-R1-K2000-c3-as1-24SEP202369757.csv")
-y3d2.dat <- read.csv("SASresult/result2-R1-K2000-c3-as2-24SEP202370013.csv")
-y3d3.dat <- read.csv("SASresult/result2-R1-K2000-c3-as3-24SEP202370822.csv")
+# y3d1.dat <- read.csv("SASresult/result2-R1-K2000-c3-as1-24SEP202369757.csv")
+# y3d2.dat <- read.csv("SASresult/result2-R1-K2000-c3-as2-24SEP202370013.csv")
+# y3d3.dat <- read.csv("SASresult/result2-R1-K2000-c3-as3-24SEP202370822.csv")
 
 ## the average
 y1d1 <- aggregate(y1d1.dat[,c("maxb", "minb")], list(p=y1d1.dat$p), FUN=mean) 
@@ -200,7 +200,7 @@ pplot <- ggplot(df, aes(x, y)) + geom_point(shape = "x") +
   scale_color_brewer(palette = "Spectral")
 
 p1 <- grid.arrange(srocd1, srocd2, srocd3, pplot, ncol=2)
-ggsave(filename = "eg2-1.eps", plot = p1, device = cairo_ps, width = 12, height = 12) 
+ggsave(filename = "eg2-1-rep10.eps", plot = p1, device = cairo_ps, width = 12, height = 12) 
 
 # ma21<- dtametasa.fc(data=example2, p=1, correct.type = "all")
 # l1 <- ma21$sauc.ci[2]-ma21$sauc.ci[1]
@@ -295,7 +295,7 @@ plot1 <- ggplot(df, aes(x = p)) +
   labs(color='Conditions', fill='95% CI region', title = "")+
   scale_color_brewer(palette = "Set1")+
   scale_fill_brewer(palette = "Set1")
-ggsave(filename = "eg2.eps", plot = plot1, device = cairo_ps, width = 8, height = 6)
+ggsave(filename = "eg2-rep10.eps", plot = plot1, device = cairo_ps, width = 8, height = 6)
 
 
 ## TABLE2

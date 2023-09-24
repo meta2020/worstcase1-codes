@@ -64,7 +64,7 @@ plot1 <- ggplot(df, aes(x = p)) +
                       values = c("red", "black"),
                     guide = guide_legend(override.aes = list(color = c("white", "white"))))
 plot1
-ggsave(filename = "eg1.eps", plot = plot1, device = cairo_ps, 
+ggsave(filename = "eg1-rep10.eps", plot = plot1, device = cairo_ps, 
        width = 8, height = 6) 
 
 # setEPS(width = 6, height = 6); postscript("eg1.eps")
