@@ -49,7 +49,7 @@ run;
 %do  i = 1 %to %eval(%sysfunc(Ceil(%sysevalf((&end - &start ) / &by ) ) ) +1) ;
 %let p=%sysevalf(( &start - &by ) + ( &by * &i )) ;
 %if  &p <=&end %then %do;
-%put &p;
+/*%put &p;*/
 
 /*SORT DATA BY INCREASING VARIANCE*/
 proc sort data=dat_input; by precision; run;
@@ -117,7 +117,7 @@ data result; set result outdata; run;
 		set dat_k;
 		do j=1 to k;
 			z=RAND('NORMal');
-			z=rannor(20232023);
+			z=rannor(2000);
 			output;
 		end;
 	run;
@@ -127,8 +127,8 @@ data result; set result outdata; run;
 		set dat_k;
 		do j=1 to k;
 		call streaminit(0);
-		seed = ceil( (2**31 - 1)*rand("uniform") ); 
-		seed = seed;
+/*		seed = ceil( (2**31 - 1)*rand("uniform") ); */
+		seed = %sysevalf(2000 + &i);
 		z=RAND('NORMal');
 		z=rannor(seed);
 		output;
@@ -160,7 +160,7 @@ data result; set result outdata; run;
 
 /*STORE RESULTS*/
 %let K_value=2000;
-%let R_value=1;
+%let R_value=10; 
 data repeat;
 run;
 %repeat1(n=&R_value, k=&K_value);
@@ -171,25 +171,11 @@ data repeat;
 	if cmiss(of p)<1;
 run;
 
-data b0;
-	set repeat;
-	by group;
-	if first.group then output;
-	keep p group maxb minb;
-	rename maxb = maxb0 minb = minb0;
-run;
-data repeat2;
-	merge repeat b0;
-	by group;
-	maxb2 = maxb - maxb0;
-	minb2 = minb - minb0;
-run;
-
 
 /*EXPORT RESULTS*/
 %let date = %SYSFUNC(PUTN(%sysevalf(%SYSFUNC(TODAY())),DATE9.));
 %let time = %sysevalf(%SYSFUNC(TIME()), ceil);
-proc export data=repeat2
+proc export data=repeat
     outfile="C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\Example1\SASresult\result1-R&R_value-K&K_value-&date&time..csv"
     dbms=csv replace;
 run;

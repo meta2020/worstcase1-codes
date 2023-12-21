@@ -202,3 +202,5 @@ SAUC <- function(par){
 	})
 	
 }
+
+

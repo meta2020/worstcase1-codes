@@ -1,4 +1,4 @@
-
++
 /*WORST-CASE BOUND OF META-ANALYSIS OF DIAGNOSTIC TEST ACCURACY (SE & SP)*/
 /*EXAMPLE 2*/
 
@@ -14,7 +14,7 @@ dbms = csv replace;
 getnames = yes;
 run;
 proc import out=par_all_wide 
-datafile = "C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\Example2\ml-par.csv"
+datafile = "C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\Example2\ml-par-IVD.csv"
 dbms = csv replace;
 getnames = yes;
 run;
@@ -55,8 +55,8 @@ run;
 data dat_v;
 set data_input (keep=TP FN TN FP);
 v11 = 1/TP+1/FN;
-v22 = 1/TN+1/FP;
-v3  = (v11+v22);
+v22 = (1/TN+1/FP);
+v3  = 1/TP+1/FN+1/TN+1/FP;
 run;
 
 %macro bias2(start=0.1, end=1, by=0.1);
@@ -65,7 +65,7 @@ run;
 %do i = 1 %to %eval(%sysfunc(Ceil(%sysevalf((&end - &start ) / &by ) ) ) +1) ;
 %let p=%sysevalf(( &start - &by ) + ( &by * &i )) ;
 %if &p <=&end %then %do;
-%put &p;
+/*%put &p;*/
 
 proc optmodel Printlevel=0;
 	number n;
@@ -200,12 +200,12 @@ data result; set result outdata; run;
    	%do i=1 %to &n;
 	/* GENERATE THE BIVARIATE RANDOM VARIABLE Z */
 	%if &n = 1 %then %do;
-	proc simnormal data=dat_z_cov out=dat_z nr = &K seed = 2023; 
+	proc simnormal data=dat_z_cov out=dat_z nr = &K seed = 2000; 
 		var z1-z2;
 	run;
 	%end;
 	%else %do;
-	proc simnormal data=dat_z_cov out=dat_z nr = &K; 
+	proc simnormal data=dat_z_cov out=dat_z nr = &K seed = %sysevalf(2000 + &i); 
 		var z1-z2;
 	run;
 	%end;
@@ -295,10 +295,10 @@ data result; set result outdata; run;
 		as = 3: sort by v3=v11+v22
 /*==================================*/
 
-%let R_value  = 1;
+%let R_value  = 10;
 %let K_value  = 2000;
 %let c_value  = 3;
-%let sort_value = 3;
+%let sort_value = 2;
 data repeat;
 run;
 %repeat2(n = &R_value, k = &K_value, c = &c_value, as = &sort_value);
@@ -308,24 +308,40 @@ data repeat;
 	if cmiss(of p)<1;
 run;
 
-data b0;
-	set repeat;
-	by group;
-	if first.group then output;
-	keep p group maxb minb;
-	rename maxb = maxb0 minb = minb0;
-run;
-data repeat2;
-	merge repeat b0;
-	by group;
-	maxb2 = maxb - maxb0;
-	minb2 = minb - minb0;
-run;
-
-/*EXPORT RESULTS*/
 %let date = %SYSFUNC(PUTN(%sysevalf(%SYSFUNC(TODAY())),DATE9.));
 %let time = %sysevalf(%SYSFUNC(TIME()), ceil);
-proc export data=repeat2
+proc export data=repeat
     outfile="C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\Example2\SASresult\result2-R&R_value-K&K_value-c&&c_value-as&&sort_value-&date&time..csv"
     dbms=csv replace;
 run;
+
+
+%macro runall(R_value=10, K_value=2000);
+   %local i;
+   	%do i=1 %to 3;
+	%local j;
+	%do j=1 %to 3;
+
+	data repeat;
+	run;
+	%repeat2(n = &R_value, k = &K_value, c = &i, as = &j);
+
+	data repeat;
+		set repeat;
+		if cmiss(of p)<1;
+	run;
+
+	/*EXPORT RESULTS*/
+	%let date = %SYSFUNC(PUTN(%sysevalf(%SYSFUNC(TODAY())),DATE9.));
+	%let time = %sysevalf(%SYSFUNC(TIME()), ceil);
+	proc export data=repeat
+	    outfile="C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\Example2\SASresult\result2-R&R_value-K&K_value-c&i-as&j..csv"
+	    dbms=csv replace;
+	run;
+
+
+	%end;
+	%end;
+%mend runall;
+
+/*%runall;*/
