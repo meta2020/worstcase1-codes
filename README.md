@@ -1,6 +1,6 @@
 ## [Reproducible R and SAS Codes] 
 
-# Monte Carlo-based worst-case bound for publication bias on the SROC analysis
+# Nonparametric worst-case bounds for publication bias on the summary receiver operating characteristic curve
 
 This folder contains reproducible R and SAS codes of the analysis of the example data.
 
@@ -10,6 +10,3 @@ This folder contains reproducible R and SAS codes of the analysis of the example
 
 
 - [Example 2 codes](Example2/)
-
-
-- [Example 3 codes](Example3/)
