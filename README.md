@@ -4,9 +4,7 @@
 
 This folder contains reproducible R and SAS codes of the analysis of the example data.
 
-## Example
+- [Uni-meta](Uni-meta/): data and codes in Web Appendix B
 
-- [Example 1 codes](Example1/)
+- [DTA-meta](DTA-meta/): data and codes in Sections 4.1 and 4.2
 
-
-- [Example 2 codes](Example2/)
