@@ -57,88 +57,29 @@ df$theta.ub <- rep(ma1$ci.ub,10)
 
 df$MC.ub <- as.vector(ma1$b)+df$maxb
 df$MC.lb <- as.vector(ma1$b)+df$minb
-df$MC.cub <- as.vector(ma1$b)+df$maxb+qnorm(0.975)*as.vector(ma1$se)
-df$MC.clb <- as.vector(ma1$b)+df$minb-qnorm(0.975)*as.vector(ma1$se)
+# df$MC.cub <- as.vector(ma1$b)+df$maxb+qnorm(0.975)*as.vector(ma1$se)
+# df$MC.clb <- as.vector(ma1$b)+df$minb-qnorm(0.975)*as.vector(ma1$se)
 
 df$CJ.ub <- as.vector(ma1$b)+b.CJ.max
 df$CJ.lb <- as.vector(ma1$b)+b.CJ.min
-df$CJ.cub <- as.vector(ma1$b)+b.CJ.ub
-df$CJ.clb <- as.vector(ma1$b)+b.CJ.lb
+# df$CJ.cub <- as.vector(ma1$b)+b.CJ.ub
+# df$CJ.clb <- as.vector(ma1$b)+b.CJ.lb
 
 
-
-## PLOT 1: UPPER BOUND ONLY ----
-## 
-lgd1 <- c("Estimate without PB", 
-         "Copas-Jackson upper bound","Simulation-based upper bound",
-         "95% CUB (Copas-Jackson bound)","95% CUB (simulation-based bound)")
-dfu <- data.frame(
-  p = rep(df$p, 5),
-  est = c(df$theta, df$CJ.ub, df$MC.ub, df$CJ.cub, df$MC.cub),
-  grp = rep(lgd1, each=10)
-)
-p1 <- ggplot(
-  dfu, aes(x = p, y = est, group = grp, color = grp, linetype=grp)) +
-  geom_line(size=1) +
-  scale_y_continuous(limits = c(-0.5,0.5), name = "lnOR") +
-  scale_x_reverse(n.breaks = 10, name="Marginal selection probability") + 
-  theme(panel.background = element_rect(fill = "white", colour = "grey50"),
-        panel.grid.major = element_line(colour = "grey87"),
-        legend.key = element_rect (fill = "white"),
-        legend.position = c(0.2, 0.8), 
-        legend.background = element_rect(fill = "white", color = "black"),
-        legend.title = element_blank())+
-  scale_colour_manual("",
-                      breaks = lgd1,
-                      values = c("grey50","steelblue","red","steelblue","red"))+
-  scale_linetype_manual("",
-                        breaks = lgd1,
-                        values = c(2,1,2,2,3))
-
-ggsave(filename = "fig-tab/eg1.eps", plot = p1, device = cairo_ps, width = 8, height = 8)
-
-## TABLE 1: UPPER BOUND ONLY ----
-## 
-tab1 <- cbind.data.frame(
-  p = p, 
-  sprintf("%.3f (%.3f)", df$MC.lb, df$MC.clb),
-  sprintf("%.3f (%.3f)", df$MC.ub, df$MC.cub),
-  sprintf("%.3f (%.3f)", df$CJ.lb, df$CJ.clb),
-  sprintf("%.3f (%.3f)", df$CJ.ub, df$CJ.cub))
-colnames(tab1) <- c("$p$", "LB (95\\% CLB)", "UB (95\\% CUB)", "LB (95\\% CLB)", "UB (95\\% CUB)")
-
-sink("fig-tab/tab1-upper.tex")
-kbl(tab1[,c(1,3,5)], 
-    format = "latex",
-    longtable = F, 
-    booktabs = T, 
-    linesep = "",
-    digits = 3,
-    align = "r",
-    escape = FALSE,
-    caption = "Example 1: the upper bounds of the lnOR by the simulation-based and the Copas-Jackson bounds.",
-    label = "tab1",
-    row.names = NA) %>%
-  add_header_above(c("", "Simulation-based bounds"=1, "Copas-Jackson bounds"=1), escape = FALSE) %>% 
-  footnote(general = "
-           UB indicates upper bound; CUB indicates the confidence upper band of the UB.", 
-           escape = FALSE, threeparttable = TRUE,  general_title = "")
-sink()
-
-## PLOT 2: UPPER AND LOWER BOUNDS ----
+## PLOT S1 ----
 ## 
 lgd2 <- c("Estimate without PB",
-         "Copas-Jackson bound","Simulation-based bound",
-         "95% CUB and CLB \n (Copas-Jackson bound)","95% CUB and CLB \n (simulation-based bound)")
+         "Copas-Jackson bound",
+         "Simulation-based bound")
 dfb <- data.frame(
-  p = rep(df$p, 5),
-  est1 = c(df$theta, df$CJ.ub, df$MC.ub, df$CJ.cub, df$MC.cub),
-  est2 = c(df$theta, df$CJ.lb, df$MC.lb, df$CJ.clb, df$MC.clb),
+  p = rep(df$p, 3),
+  est1 = c(df$theta, df$CJ.ub, df$MC.ub),
+  est2 = c(df$theta, df$CJ.lb, df$MC.lb),
   grp = rep(lgd2, each=10)
 )
 dfl <- data.frame(
-  p = rep(df$p, 4),
-  est = c(df$CJ.lb, df$MC.lb, df$CJ.clb, df$MC.clb),
+  p = rep(df$p, 2),
+  est = c(df$CJ.lb, df$MC.lb),
   grp = rep(lgd2[-1], each=10)
 )
 p2 <- ggplot(
@@ -164,7 +105,15 @@ ggsave(filename = "fig-tab/eg1-bothbounds.eps", plot = p2, device = cairo_ps, wi
 
 ## TABLE 2: UPPER AND LOWER BOUNDS ----
 ## 
-sink("fig-tab/tab1-both.tex")
+tab1 <- cbind.data.frame(
+  p = p,
+  m = round(nrow(example1)*(1/p-1)),
+  sprintf("%.3f", df$MC.lb),
+  sprintf("%.3f", df$MC.ub),
+  sprintf("%.3f", df$CJ.lb),
+  sprintf("%.3f", df$CJ.ub))
+colnames(tab1) <- c("$p$", "$M$","Lower bound", "Upper bound", "Lower bound", "Upper bound")
+
 kbl(tab1, 
     format = "latex",
     longtable = F, 
@@ -173,15 +122,15 @@ kbl(tab1,
     digits = 3,
     align = "r",
     escape = FALSE,
-    caption = "Example 1: the upper and lower bounds of the lnOR by the simulation-based and the Copas-Jackson bounds.",
+    caption = "Example 1: worst-case bounds of the lnOR.",
     label = "tab1",
+    position = "h",
     row.names = NA) %>%
-  add_header_above(c("", "Simulation-based bounds"=2, "Copas-Jackson bounds"=2), escape = FALSE) %>% 
+  add_header_above(c("","", "Simulation-based bounds"=2, "Copas-Jackson bounds"=2), escape = FALSE)%>% 
   footnote(general = "
-           LB indicates lower bound; CLB indicates the confidence lower band of the LB; 
-           UB indicates upper bound; CUB indicates the confidence upper band of the UB.", 
-           escape = FALSE, threeparttable = TRUE,  general_title = "")
-sink()
+           $M$ indicates the number of unpublished studies.", 
+           escape = FALSE, threeparttable = T,  general_title = "")
+
 
 
 ## PLOT 3A: COMPARISON OF SETTING DIFFERENT K (UPPER BOUNDS, ONE TIME) ----
@@ -222,7 +171,6 @@ p3a <- ggplot(
 
 tab21 <- dfk %>% spread(key = grp, value = est)
 
-sink("fig-tab/tab1-k.tex")
 kbl(tab21[order(tab21$p, decreasing = T),], 
     format = "latex",
     longtable = F, 
@@ -235,7 +183,6 @@ kbl(tab21[order(tab21$p, decreasing = T),],
     label = "tab1",
     row.names = NA) %>%
   add_header_above(c("", "Simulation-based upper bounds"=4, ""), escape = FALSE)  
-sink()
 
 ## PLOT 3B: COMPARISON OF SETTING DIFFERENT K AND 10 SAMPLES ----------------------
 ##

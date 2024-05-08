@@ -20,8 +20,10 @@ proc optmodel Printlevel= &plvl;
 	str solstatus;
 	str status;
 
-	var psk{1..n,1..k};
-	var ps{1..n};
+/*	var psk{1..n,1..k};*/
+/*	var ps{1..n};*/
+	var psk{1..(floor(n/&p.)),1..k};
+	var ps{1..(floor(n/&p.))};
 
 	num zk{1..k};
 	num precision{1..n};
@@ -35,11 +37,16 @@ proc optmodel Printlevel= &plvl;
 	read data dat_z 		into [_n_] zk=z;
 
 	/* CONSTAINTS (1)-(3) */
-	con cons1 {i in 1..n, j in 1..k}: 	0<=psk[i,j]<=1;
-	con cons2 {i in 1..n}: 				0<=ps[i]<=1;
-	con cons3 {i in 1..n}: 				ps[i]=(1/k)*sum{j in 1..k} psk[i,j];
-	con cons4: 							&p.<=1/n*sum{i in 1..n} ps[i];
+/*	con cons1 {i in 1..n, j in 1..k}: 	0<=psk[i,j]<=1;*/
+/*	con cons2 {i in 1..n}: 				0<=ps[i]<=1;*/
+/*	con cons3 {i in 1..n}: 				ps[i]=(1/k)*sum{j in 1..k} psk[i,j];*/
+/*	con cons4: 							&p.<=1/n*sum{i in 1..n} ps[i];*/
 
+
+	con cons1 {i in 1..(floor(n/&p.)), j in 1..k}: 	0<=psk[i,j]<=1;
+	con cons2 {i in 1..(floor(n/&p.))}: 			0<=ps[i]<=1;
+	con cons3 {i in 1..(floor(n/&p.))}:  			ps[i]=(1/k)*sum{j in 1..k} psk[i,j];
+	con cons4: 										n=sum{i in 1..(floor(n/&p.))} ps[i];
 
 	/* ASSUMPTION1 */
 	con cons5 {i in 1..(n-1)}: 			ps[i]<=ps[i+1]; 
