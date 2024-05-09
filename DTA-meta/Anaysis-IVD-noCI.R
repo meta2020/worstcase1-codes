@@ -75,7 +75,7 @@ dfl <- data.frame(
 
 saucd <- ggplot(dfl, aes(x = p, y = est, color = grp, linetype = grp)) +
   geom_line(size=1) +
-  scale_y_continuous(limits = c(0,1), name = "SAUC") +
+  scale_y_continuous(limits = c(0,1),n.breaks = 10, name = "SAUC") +
   scale_x_reverse(n.breaks = 10, name="Marginal selection probability") + 
   theme(panel.background = element_rect(fill = "white", colour = "grey50"),
         panel.grid.major = element_line(colour = "grey87"),
@@ -155,7 +155,7 @@ dfc1 <- data.frame(
 )
 p2a <- ggplot(dfc1, aes(x = p, y = est, color = grp, linetype = grp)) +
   geom_line(size=1) +
-  scale_y_continuous(limits = c(0,1), name = "SAUC") +
+  scale_y_continuous(limits = c(0,1),n.breaks = 10, name = "SAUC") +
   scale_x_reverse(n.breaks = 10, name="Marginal selection probability") + 
   theme(panel.background = element_rect(fill = "white", colour = "grey50"),
         panel.grid.major = element_line(colour = "grey87"),
@@ -185,7 +185,7 @@ dfc2 <- data.frame(
 )
 p2b <- ggplot(dfc2, aes(x = p, y = est, color = grp, linetype = grp)) +
   geom_line(size=1) +
-  scale_y_continuous(limits = c(0,1), name = "SAUC") +
+  scale_y_continuous(limits = c(0,1),n.breaks = 10, name = "SAUC") +
   scale_x_reverse(n.breaks = 10, name="Marginal selection probability") + 
   theme(panel.background = element_rect(fill = "white", colour = "grey50"),
         panel.grid.major = element_line(colour = "grey87"),
@@ -215,7 +215,7 @@ dfc3 <- data.frame(
 )
 p2c <- ggplot(dfc3, aes(x = p, y = est, color = grp, linetype = grp)) +
   geom_line(size=1) +
-  scale_y_continuous(limits = c(0,1), name = "SAUC") +
+  scale_y_continuous(limits = c(0,1),n.breaks = 10, name = "SAUC") +
   scale_x_reverse(n.breaks = 10, name="Marginal selection probability") + 
   theme(panel.background = element_rect(fill = "white", colour = "grey50"),
         panel.grid.major = element_line(colour = "grey87"),
@@ -253,7 +253,7 @@ p2d <- ggplot(dfl4, aes(x = p, y = est1, color = grp2, linetype = grp2)) +
   geom_line(aes(x = p, y = est3, color = grp2, linetype=grp2), size=1)+
   geom_point(aes(df.piao$p, df.piao$sauc, shape = "Piao et al.'s method"), color="black", size = 2.5)+
   geom_point(aes(df.li$p, df.li$sauc, shape = "Li et al.'s method"), color="black", size = 2.5)+
-  scale_y_continuous(limits = c(0,1), name = "SAUC") +
+  scale_y_continuous(limits = c(0,1),n.breaks = 10, name = "SAUC") +
   scale_x_reverse(n.breaks = 10, name="Marginal selection probability") + 
   theme(panel.background = element_rect(fill = "white", colour = "grey50"),
         panel.grid.major = element_line(colour = "grey87"),
@@ -320,7 +320,7 @@ kbl(tab23,
 dfk2a <- dfk2[dfk2$as==1,]
 p3a <- ggplot(dfk2a, aes(x = p, y = est, color = grp, linetype = grp)) +
   geom_line(size=1) +
-  scale_y_continuous(limits = c(0,1), name = "SAUC") +
+  scale_y_continuous(limits = c(0.25,0.9),n.breaks = 13, name = "SAUC") +
   scale_x_reverse(n.breaks = 10, name="Marginal selection probability") + 
   theme(panel.background = element_rect(fill = "white", colour = "grey50"),
         panel.grid.major = element_line(colour = "grey87"),
@@ -341,7 +341,7 @@ p3a <- ggplot(dfk2a, aes(x = p, y = est, color = grp, linetype = grp)) +
 dfk2b <- dfk2[dfk2$as==2,]
 p3b <- ggplot(dfk2b, aes(x = p, y = est, color = grp, linetype = grp)) +
   geom_line(size=1) +
-  scale_y_continuous(limits = c(0,1), name = "SAUC") +
+  scale_y_continuous(limits = c(0.25,0.9),n.breaks = 13, name = "SAUC") +
   scale_x_reverse(n.breaks = 10, name="Marginal selection probability") + 
   theme(panel.background = element_rect(fill = "white", colour = "grey50"),
         panel.grid.major = element_line(colour = "grey87"),
@@ -362,7 +362,7 @@ p3b <- ggplot(dfk2b, aes(x = p, y = est, color = grp, linetype = grp)) +
 dfk2c <- dfk2[dfk2$as==3,]
 p3c <- ggplot(dfk2c, aes(x = p, y = est, color = grp, linetype = grp)) +
   geom_line(size=1) +
-  scale_y_continuous(limits = c(0,1), name = "SAUC") +
+  scale_y_continuous(limits = c(0.25,0.9),n.breaks = 13, name = "SAUC") +
   scale_x_reverse(n.breaks = 10, name="Marginal selection probability") + 
   theme(panel.background = element_rect(fill = "white", colour = "grey50"),
         panel.grid.major = element_line(colour = "grey87"),
@@ -402,7 +402,7 @@ dfr2a <- dfr2[dfr2$as==1,]
 p3d <- ggplot(dfr2a, aes(x=pp, y=est, fill=grp2)) + 
   geom_boxplot(alpha = 0.5)+
   scale_x_discrete(limits = rev(levels(dfr2a$pp)),name="Marginal selection probability") +
-  scale_y_continuous(limits = c(0,1), name = "SAUC") +
+  scale_y_continuous(limits = c(0.25,0.9),n.breaks = 13, name = "SAUC") +
   theme(panel.background = element_rect(fill = "white", colour = "grey50"),
         panel.grid.major = element_line(colour = "grey87"),
         legend.key = element_rect (fill = "white"),
@@ -419,7 +419,7 @@ dfr2b <- dfr2[dfr2$as==2,]
 p3e <- ggplot(dfr2b, aes(x=pp, y=est, fill=grp2)) + 
   geom_boxplot(alpha = 0.5)+
   scale_x_discrete(limits = rev(levels(dfr2b$pp)),name="Marginal selection probability") +
-  scale_y_continuous(limits = c(0,1), name = "SAUC") +
+  scale_y_continuous(limits = c(0.25,0.9),n.breaks = 13, name = "SAUC") +
   theme(panel.background = element_rect(fill = "white", colour = "grey50"),
         panel.grid.major = element_line(colour = "grey87"),
         legend.key = element_rect (fill = "white"),
@@ -436,7 +436,7 @@ dfr2c <- dfr2[dfr2$as==3,]
 p3f <- ggplot(dfr2c, aes(x=pp, y=est, fill=grp2)) + 
   geom_boxplot(alpha = 0.5)+
   scale_x_discrete(limits = rev(levels(dfr2c$pp)),name="Marginal selection probability") +
-  scale_y_continuous(limits = c(0,1), name = "SAUC") +
+  scale_y_continuous(limits = c(0.25,0.9),n.breaks = 13, name = "SAUC") +
   theme(panel.background = element_rect(fill = "white", colour = "grey50"),
         panel.grid.major = element_line(colour = "grey87"),
         legend.key = element_rect (fill = "white"),

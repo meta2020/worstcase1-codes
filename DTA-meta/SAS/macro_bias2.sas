@@ -64,6 +64,7 @@ proc optmodel Printlevel=&plvl;
 	solve;
 	status = _STATUS_;
 	solstatus = _SOLUTION_STATUS_;
+/*	print ps;*/
 
 	create data minb from p=&p k=k minb=minb status2=status solstatus2=solstatus;
 
