@@ -18,19 +18,19 @@ proc import  out=dat_input
 run;
 
 /*LOAD MACRO OF CALCULATING BIAS*/
-%include "C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\Uni-meta\SAS\macro_bias1.sas";
+%include "C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\Uni-meta\SAS\macro_bias1-E.sas";
 
 /*SIMULATION-BASED WORST-CASE BOUND AND STORE RESULTS*/
-%let kk = 10; %let rr = 1; %let pl = 1;
+%let kk = 1000; %let rr = 1; %let pl = 1;
 ods html file="result1-K&kk.-R&rr.S.html" path="C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\Uni-meta\SAS\";
 
 %let start_time = %sysfunc(datetime());
 %bias1(start=0.1, end=1, by=0.1, repeatn=&rr, dtin = dat_input, k=&kk, seed=2000, plvl = &pl);
 %put **** Duration (K=&kk) = %sysfunc(putn(%sysevalf(%sysfunc(datetime()) - &start_time),time8.)) ****; 
-proc export data=repeat
-    outfile="C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\Uni-meta\SAS\result1-K&kk.-R&rr..csv"
-    dbms=csv replace;
-run;
+/*proc export data=repeat*/
+/*    outfile="C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\Uni-meta\SAS\result1-K&kk.-R&rr..csv"*/
+/*    dbms=csv replace;*/
+/*run;*/
 ods html close;
 
 

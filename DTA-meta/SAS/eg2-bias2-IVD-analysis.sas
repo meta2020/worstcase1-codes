@@ -23,7 +23,7 @@ run;
 
 
 /*SIMULATION-BASED WORST-CASE BOUND AND STORE RESULTS*/
-%let kk = 1000; %let rr = 1; %let pl = 1;
+%let kk = 20000; %let rr = 1; %let pl = 1;
 ods html file="IVDresult2-K&kk.-R&rr..html" path="C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\SAS\";
 
 %let start_time = %sysfunc(datetime());
