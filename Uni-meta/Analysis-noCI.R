@@ -44,7 +44,7 @@ b.CJ.lb <- b.CJ.min-qnorm(0.975)*as.vector(ma1$se)
 rbind(b.CJ.ub, b.CJ.lb)
 
 ## IMPORT THE MC BOUND; NEED RESULTS FROM SAS**!!-------------------------------
-b.MC.result <- read.csv("SAS/result1-K2000-R1.csv")
+b.MC.result <- read.csv("SAS/NEQ/result1-K2000-R1.csv")
 ##
 
 ## GENERATE PLOTS AND TABLES----------------------------------------------------
@@ -85,7 +85,7 @@ dfl <- data.frame(
 p2 <- ggplot(
   dfb, aes(x = p, y = est1, group = grp, color = grp, linetype=grp)) +
   geom_line(size=1) +
-  geom_line(aes(x = p, y = est2, group = grp, color = grp, linetype=grp), size=1)+
+  geom_line(aes(x = p, y = est2, group = grp, color = grp, linetype=grp), linewidth=1)+
   scale_y_continuous(limits = c(-1.5,0.5), name = "lnOR") +
   scale_x_reverse(n.breaks = 10, name="Marginal selection probability") + 
   theme(panel.background = element_rect(fill = "white", colour = "grey50"),
@@ -135,10 +135,10 @@ kbl(tab1,
 
 ## PLOT 3A: COMPARISON OF SETTING DIFFERENT K (UPPER BOUNDS, ONE TIME) ----
 ##
-b.MC.result1 <- read.csv("SAS/result1-K1000-R1.csv")
-b.MC.result2 <- read.csv("SAS/result1-K2000-R1.csv")
-b.MC.result3 <- read.csv("SAS/result1-K5000-R1.csv")
-b.MC.result4 <- read.csv("SAS/result1-K20000-R1.csv")
+b.MC.result1 <- read.csv("SAS/NEQ/result1-K1000-R1.csv")
+b.MC.result2 <- read.csv("SAS/NEQ/result1-K2000-R1.csv")
+b.MC.result3 <- read.csv("SAS/NEQ/result1-K5000-R1.csv")
+b.MC.result4 <- read.csv("SAS/NEQ/result1-K20000-R1.csv")
 
 ldg3 <- c("Copas-Jackson bound","K=1000","K=2000","K=5000","K=20000")
 dfk <- data.frame(
@@ -169,9 +169,11 @@ p3a <- ggplot(
 ## TABLE 3A: COMPARISON OF SETTING DIFFERENT K (UPPER BOUNDS, ONE TIME) ----
 ##
 
-tab21 <- dfk %>% spread(key = grp, value = est)
+tab21 <- dfk %>% spread(key = grp, value = est) %>% as.data.frame()
+tab21.p <- tab21[order(tab21$p, decreasing = T),]
+rownames(tab21.p) <- c()
 
-kbl(tab21[order(tab21$p, decreasing = T),], 
+kbl(tab21.p[,c(1,2,3,4,6,5)], 
     format = "latex",
     longtable = F, 
     booktabs = T, 
@@ -182,15 +184,15 @@ kbl(tab21[order(tab21$p, decreasing = T),],
     caption = "Example 1: the upper bounds of the lnOR by the simulation-based given different $K$.",
     label = "tab1",
     row.names = NA) %>%
-  add_header_above(c("", "Simulation-based upper bounds"=4, ""), escape = FALSE)  
+  add_header_above(c("", "", "Simulation-based upper bounds"=4), escape = FALSE)  
 
 ## PLOT 3B: COMPARISON OF SETTING DIFFERENT K AND 10 SAMPLES ----------------------
 ##
 
-b.MC.rep1 <- read.csv("SAS/result1-K1000-R10.csv")
-b.MC.rep2 <- read.csv("SAS/result1-K2000-R10.csv")
-b.MC.rep3 <- read.csv("SAS/result1-K5000-R10.csv")
-b.MC.rep4 <- read.csv("SAS/result1-K20000-R10.csv")
+b.MC.rep1 <- read.csv("SAS/NEQ/result1-K1000-R10.csv")
+b.MC.rep2 <- read.csv("SAS/NEQ/result1-K2000-R10.csv")
+b.MC.rep3 <- read.csv("SAS/NEQ/result1-K5000-R10.csv")
+b.MC.rep4 <- read.csv("SAS/NEQ/result1-K20000-R10.csv")
 
 lgd4 <- c("K=1000","K=2000","K=5000","K=20000") 
 bpdf0 <- rbind(b.MC.rep1,b.MC.rep2,b.MC.rep3,b.MC.rep4)

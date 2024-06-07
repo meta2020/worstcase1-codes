@@ -38,7 +38,7 @@ proc optmodel Printlevel= &plvl;
 	con cons1 {i in 1..n, j in 1..k}: 	0<=psk[i,j]<=1;
 	con cons2 {i in 1..n}: 				0<=ps[i]<=1;
 	con cons3 {i in 1..n}: 				ps[i]=(1/k)*sum{j in 1..k} psk[i,j];
-	con cons4: 							&p.<=1/n*sum{i in 1..n} ps[i];
+	con cons4: 							&p<=1/n*sum{i in 1..n} ps[i];
 
 
 	/* ASSUMPTION1 */
@@ -55,6 +55,7 @@ proc optmodel Printlevel= &plvl;
 	solve;
 	status = _STATUS_;
 	solstatus = _SOLUTION_STATUS_;
+/*	print ps;*/
 
 	create data minb from p=&p k=k minb=minb status2=status solstatus2=solstatus;
 

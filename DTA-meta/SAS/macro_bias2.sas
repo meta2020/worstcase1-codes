@@ -103,8 +103,8 @@ assumption = 1);
 	data dat_v;
 	set &dtin (keep=TP FN TN FP);
 	v11 = 1/TP+1/FN;
-	v22 = (1/TN+1/FP);
-	v3  = 1/TP+1/FN+1/TN+1/FP;
+	v22 = 1/TN+1/FP;
+	v3  = v11+v22;
 	run;
 
 	/*ASSUMPTION 2*/

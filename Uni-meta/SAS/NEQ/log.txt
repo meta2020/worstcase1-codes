@@ -1,0 +1,422 @@
+508  
+509  /*CLEAR LIBRARY*/
+510  proc datasets library=work kill noprint;
+510!                                         quit;
+511  /*CLOSE ALL NOTES*/
+512  ods _all_ close;
+513  options nonotes;
+514  
+515  
+516  /*IMPORT RAW DATASET*/
+517  /*VARIABLES: LOGOR AND PRECISION (=1/SIGMA)*/
+518  proc import  out=dat_input
+519      datafile =
+519! "C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\Uni-meta\eg1-data.csv"
+520      dbms = csv replace;
+521      getnames = yes;
+522  run;
+523   /**********************************************************************
+524   *   PRODUCT:   SAS
+525   *   VERSION:   9.4
+526   *   CREATOR:   External File Interface
+527   *   DATE:      31MAY24
+528   *   DESC:      Generated SAS Datastep Code
+529   *   TEMPLATE SOURCE:  (None Specified.)
+530   ***********************************************************************/
+531      data WORK.DAT_INPUT    ;
+532      %let _EFIERR_ = 0; /* set the ERROR detection macro variable */
+533      infile 'C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\Uni-meta\eg1-data.csv'
+533! delimiter = ',' MISSOVER DSD lrecl=32767 firstobs=2 ;
+534         informat study best32. ;
+535         informat y best32. ;
+536         informat precision best32. ;
+537         format study best12. ;
+538         format y best12. ;
+539         format precision best12. ;
+540      input
+541                  study
+542                  y
+543                  precision
+544      ;
+545      if _ERROR_ then call symputx('_EFIERR_',1);  /* set ERROR detection macro variable */
+546      run;
+14 rows created in WORK.DAT_INPUT from 
+C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\Uni-meta\eg1-data.csv.
+  
+  
+  
+547  
+548  
+549  
+550  /*LOAD MACRO OF CALCULATING BIAS*/
+551  %include
+551! "C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\Uni-meta\SAS\macro_bias1.sas";
+690   
+691   /*SIMULATION-BASED WORST-CASE BOUND AND STORE RESULTS*/
+692   /*SET HOW MANY TIMES FOR REPEAT*/
+693   %let rr = 1;
+694   /*SET WHETHER TO PRINT THE OPTMODEL RESULT*/
+695   %let pl = 1;
+696   /*SET SEED*/
+697   %let seedn = 2000;
+698   /*SET HOW MANY RANDOM VARIABLES TO USE*/
+699   
+700   
+701   %let kk = 1000;
+702   ods html file="result1-K&kk.-R&rr..html"
+702 ! path="C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\Uni-meta\SAS\NEQ\";
+703   %let start_time = %sysfunc(datetime());
+704   %bias1(start=0.1, end=1, by=0.1, repeatn=&rr, dtin = dat_input, k=&kk, seed=&seedn, plvl =
+704 !  &pl);
+WARNING: Multiple lengths were specified for the variable solstatus2 by input data set(s). This 
+         can cause truncation of data.
+705   %put **** Duration (K=&kk) = %sysfunc(putn(%sysevalf(%sysfunc(datetime()) -
+705 ! &start_time),time8.)) ****;
+**** Duration (K=1000) =  0:00:11 ****
+706   proc export data=repeat
+707       outfile="C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\Uni-meta\SAS\NEQ\result
+707 ! 1-K&kk.-R&rr..csv"
+708       dbms=csv replace;
+709   run;
+710    /**********************************************************************
+711    *   PRODUCT:   SAS
+712    *   VERSION:   9.4
+713    *   CREATOR:   External File Interface
+714    *   DATE:      31MAY24
+715    *   DESC:      Generated SAS Datastep Code
+716    *   TEMPLATE SOURCE:  (None Specified.)
+717    ***********************************************************************/
+718       data _null_;
+719       %let _EFIERR_ = 0; /* set the ERROR detection macro variable */
+720       %let _EFIREC_ = 0;     /* clear export record count macro variable */
+721       file
+721 ! 'C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\Uni-meta\SAS\NEQ\result1-K1000-R1.c
+721 ! sv' delimiter=',' DSD DROPOVER lrecl=32767;
+722       if _n_ = 1 then        /* write column names or labels */
+723        do;
+724          put
+725             "p"
+726          ','
+727             "k"
+728          ','
+729             "maxb"
+730          ','
+731             "status1"
+732          ','
+733             "solstatus1"
+734          ','
+735             "s"
+736          ','
+737             "minb"
+738          ','
+739             "status2"
+740          ','
+741             "solstatus2"
+742          ','
+743             "group"
+744          ;
+745        end;
+746      set  REPEAT   end=EFIEOD;
+747          format p best12. ;
+748          format k best12. ;
+749          format maxb best12. ;
+750          format status1 $2. ;
+751          format solstatus1 $7. ;
+752          format s best12. ;
+753          format minb best12. ;
+754          format status2 $2. ;
+755          format solstatus2 $7. ;
+756          format group best12. ;
+757        do;
+758          EFIOUT + 1;
+759          put p @;
+760          put k @;
+761          put maxb @;
+762          put status1 $ @;
+763          put solstatus1 $ @;
+764          put s @;
+765          put minb @;
+766          put status2 $ @;
+767          put solstatus2 $ @;
+768          put group ;
+769          ;
+770        end;
+771       if _ERROR_ then call symputx('_EFIERR_',1);  /* set ERROR detection macro variable */
+772       if EFIEOD then call symputx('_EFIREC_',EFIOUT);
+773       run;
+10 records created in 
+C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\Uni-meta\SAS\NEQ\result1-K1000-R1.csv 
+from REPEAT.
+  
+  
+774   %let kk = 2000;
+775   ods html file="result1-K&kk.-R&rr..html"
+775 ! path="C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\Uni-meta\SAS\NEQ\";
+776   %let start_time = %sysfunc(datetime());
+777   %bias1(start=0.1, end=1, by=0.1, repeatn=&rr, dtin = dat_input, k=&kk, seed=&seedn, plvl =
+777 !  &pl);
+WARNING: Multiple lengths were specified for the variable solstatus1 by input data set(s). This 
+         can cause truncation of data.
+WARNING: Multiple lengths were specified for the variable solstatus2 by input data set(s). This 
+         can cause truncation of data.
+778   %put **** Duration (K=&kk) = %sysfunc(putn(%sysevalf(%sysfunc(datetime()) -
+778 ! &start_time),time8.)) ****;
+**** Duration (K=2000) =  0:00:21 ****
+779   proc export data=repeat
+780       outfile="C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\Uni-meta\SAS\NEQ\result
+780 ! 1-K&kk.-R&rr..csv"
+781       dbms=csv replace;
+782   run;
+783    /**********************************************************************
+784    *   PRODUCT:   SAS
+785    *   VERSION:   9.4
+786    *   CREATOR:   External File Interface
+787    *   DATE:      31MAY24
+788    *   DESC:      Generated SAS Datastep Code
+789    *   TEMPLATE SOURCE:  (None Specified.)
+790    ***********************************************************************/
+791       data _null_;
+792       %let _EFIERR_ = 0; /* set the ERROR detection macro variable */
+793       %let _EFIREC_ = 0;     /* clear export record count macro variable */
+794       file
+794 ! 'C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\Uni-meta\SAS\NEQ\result1-K2000-R1.c
+794 ! sv' delimiter=',' DSD DROPOVER lrecl=32767;
+795       if _n_ = 1 then        /* write column names or labels */
+796        do;
+797          put
+798             "p"
+799          ','
+800             "k"
+801          ','
+802             "maxb"
+803          ','
+804             "status1"
+805          ','
+806             "solstatus1"
+807          ','
+808             "s"
+809          ','
+810             "minb"
+811          ','
+812             "status2"
+813          ','
+814             "solstatus2"
+815          ','
+816             "group"
+817          ;
+818        end;
+819      set  REPEAT   end=EFIEOD;
+820          format p best12. ;
+821          format k best12. ;
+822          format maxb best12. ;
+823          format status1 $2. ;
+824          format solstatus1 $7. ;
+825          format s best12. ;
+826          format minb best12. ;
+827          format status2 $2. ;
+828          format solstatus2 $7. ;
+829          format group best12. ;
+830        do;
+831          EFIOUT + 1;
+832          put p @;
+833          put k @;
+834          put maxb @;
+835          put status1 $ @;
+836          put solstatus1 $ @;
+837          put s @;
+838          put minb @;
+839          put status2 $ @;
+840          put solstatus2 $ @;
+841          put group ;
+842          ;
+843        end;
+844       if _ERROR_ then call symputx('_EFIERR_',1);  /* set ERROR detection macro variable */
+845       if EFIEOD then call symputx('_EFIREC_',EFIOUT);
+846       run;
+10 records created in 
+C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\Uni-meta\SAS\NEQ\result1-K2000-R1.csv 
+from REPEAT.
+  
+  
+847   %let kk = 5000;
+848   ods html file="result1-K&kk.-R&rr..html"
+848 ! path="C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\Uni-meta\SAS\NEQ\";
+849   %let start_time = %sysfunc(datetime());
+850   %bias1(start=0.1, end=1, by=0.1, repeatn=&rr, dtin = dat_input, k=&kk, seed=&seedn, plvl =
+850 !  &pl);
+WARNING: Multiple lengths were specified for the variable solstatus2 by input data set(s). This 
+         can cause truncation of data.
+851   %put **** Duration (K=&kk) = %sysfunc(putn(%sysevalf(%sysfunc(datetime()) -
+851 ! &start_time),time8.)) ****;
+**** Duration (K=5000) =  0:00:57 ****
+852   proc export data=repeat
+853       outfile="C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\Uni-meta\SAS\NEQ\result
+853 ! 1-K&kk.-R&rr..csv"
+854       dbms=csv replace;
+855   run;
+856    /**********************************************************************
+857    *   PRODUCT:   SAS
+858    *   VERSION:   9.4
+859    *   CREATOR:   External File Interface
+860    *   DATE:      31MAY24
+861    *   DESC:      Generated SAS Datastep Code
+862    *   TEMPLATE SOURCE:  (None Specified.)
+863    ***********************************************************************/
+864       data _null_;
+865       %let _EFIERR_ = 0; /* set the ERROR detection macro variable */
+866       %let _EFIREC_ = 0;     /* clear export record count macro variable */
+867       file
+867 ! 'C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\Uni-meta\SAS\NEQ\result1-K5000-R1.c
+867 ! sv' delimiter=',' DSD DROPOVER lrecl=32767;
+868       if _n_ = 1 then        /* write column names or labels */
+869        do;
+870          put
+871             "p"
+872          ','
+873             "k"
+874          ','
+875             "maxb"
+876          ','
+877             "status1"
+878          ','
+879             "solstatus1"
+880          ','
+881             "s"
+882          ','
+883             "minb"
+884          ','
+885             "status2"
+886          ','
+887             "solstatus2"
+888          ','
+889             "group"
+890          ;
+891        end;
+892      set  REPEAT   end=EFIEOD;
+893          format p best12. ;
+894          format k best12. ;
+895          format maxb best12. ;
+896          format status1 $2. ;
+897          format solstatus1 $7. ;
+898          format s best12. ;
+899          format minb best12. ;
+900          format status2 $2. ;
+901          format solstatus2 $7. ;
+902          format group best12. ;
+903        do;
+904          EFIOUT + 1;
+905          put p @;
+906          put k @;
+907          put maxb @;
+908          put status1 $ @;
+909          put solstatus1 $ @;
+910          put s @;
+911          put minb @;
+912          put status2 $ @;
+913          put solstatus2 $ @;
+914          put group ;
+915          ;
+916        end;
+917       if _ERROR_ then call symputx('_EFIERR_',1);  /* set ERROR detection macro variable */
+918       if EFIEOD then call symputx('_EFIREC_',EFIOUT);
+919       run;
+10 records created in 
+C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\Uni-meta\SAS\NEQ\result1-K5000-R1.csv 
+from REPEAT.
+  
+  
+920   %let kk = 20000;
+921   ods html file="result1-K&kk.-R&rr..html"
+921 ! path="C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\Uni-meta\SAS\NEQ\";
+922   %let start_time = %sysfunc(datetime());
+923   %bias1(start=0.1, end=1, by=0.1, repeatn=&rr, dtin = dat_input, k=&kk, seed=2000, plvl =
+923 ! &pl);
+WARNING: Multiple lengths were specified for the variable solstatus1 by input data set(s). This 
+         can cause truncation of data.
+WARNING: Multiple lengths were specified for the variable solstatus2 by input data set(s). This 
+         can cause truncation of data.
+924   %put **** Duration (K=&kk) = %sysfunc(putn(%sysevalf(%sysfunc(datetime()) -
+924 ! &start_time),time8.)) ****;
+**** Duration (K=20000) =  0:03:36 ****
+925   proc export data=repeat
+926       outfile="C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\Uni-meta\SAS\NEQ\result
+926 ! 1-K&kk.-R&rr..csv"
+927       dbms=csv replace;
+928   run;
+929    /**********************************************************************
+930    *   PRODUCT:   SAS
+931    *   VERSION:   9.4
+932    *   CREATOR:   External File Interface
+933    *   DATE:      31MAY24
+934    *   DESC:      Generated SAS Datastep Code
+935    *   TEMPLATE SOURCE:  (None Specified.)
+936    ***********************************************************************/
+937       data _null_;
+938       %let _EFIERR_ = 0; /* set the ERROR detection macro variable */
+939       %let _EFIREC_ = 0;     /* clear export record count macro variable */
+940       file
+940 ! 'C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\Uni-meta\SAS\NEQ\result1-K20000-R1.
+940 ! csv' delimiter=',' DSD DROPOVER lrecl=32767;
+941       if _n_ = 1 then        /* write column names or labels */
+942        do;
+943          put
+944             "p"
+945          ','
+946             "k"
+947          ','
+948             "maxb"
+949          ','
+950             "status1"
+951          ','
+952             "solstatus1"
+953          ','
+954             "s"
+955          ','
+956             "minb"
+957          ','
+958             "status2"
+959          ','
+960             "solstatus2"
+961          ','
+962             "group"
+963          ;
+964        end;
+965      set  REPEAT   end=EFIEOD;
+966          format p best12. ;
+967          format k best12. ;
+968          format maxb best12. ;
+969          format status1 $2. ;
+970          format solstatus1 $7. ;
+971          format s best12. ;
+972          format minb best12. ;
+973          format status2 $2. ;
+974          format solstatus2 $7. ;
+975          format group best12. ;
+976        do;
+977          EFIOUT + 1;
+978          put p @;
+979          put k @;
+980          put maxb @;
+981          put status1 $ @;
+982          put solstatus1 $ @;
+983          put s @;
+984          put minb @;
+985          put status2 $ @;
+986          put solstatus2 $ @;
+987          put group ;
+988          ;
+989        end;
+990       if _ERROR_ then call symputx('_EFIERR_',1);  /* set ERROR detection macro variable */
+991       if EFIEOD then call symputx('_EFIREC_',EFIOUT);
+992       run;
+10 records created in 
+C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\Uni-meta\SAS\NEQ\result1-K20000-R1.csv 
+from REPEAT.
+  
+  
+993   
+994   
+995   ods html close;
+996   
+997   
+998   proc printto; run;

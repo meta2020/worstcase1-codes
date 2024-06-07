@@ -1,0 +1,587 @@
+NOTE: PROCEDURE PRINTTO used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+      
+
+9    
+10   /*CLOSE ALL NOTES*/
+11   proc datasets library=work kill noprint;
+NOTE: Writing HTML Body file: sashtml.htm
+NOTE: Deleting WORK.SASMAC3 (memtype=CATALOG).
+11 !                                          quit;
+
+NOTE: PROCEDURE DATASETS used (Total process time):
+      real time           0.42 seconds
+      cpu time            0.06 seconds
+      
+
+12   ods _all_ close;
+13   options NONOTES;
+14   
+15   
+16   
+17   /*EXAMPLE 2 IN MAIN: IVD*/
+18   proc import out=data_input
+19   datafile =
+19 ! "C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\anadata\eg2-IVD-cc.csv"
+20   dbms = csv replace;
+21   getnames = yes;
+22   run;
+23    /**********************************************************************
+24    *   PRODUCT:   SAS
+25    *   VERSION:   9.4
+26    *   CREATOR:   External File Interface
+27    *   DATE:      01JUN24
+28    *   DESC:      Generated SAS Datastep Code
+29    *   TEMPLATE SOURCE:  (None Specified.)
+30    ***********************************************************************/
+31       data WORK.DATA_INPUT    ;
+32       %let _EFIERR_ = 0; /* set the ERROR detection macro variable */
+33       infile
+33 ! 'C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\anadata\eg2-IVD-cc.csv'
+33 ! delimiter = ',' MISSOVER DSD lrecl=32767 firstobs=2 ;
+34          informat study best32. ;
+35          informat TP best32. ;
+36          informat FN best32. ;
+37          informat FP best32. ;
+38          informat TN best32. ;
+39          format study best12. ;
+40          format TP best12. ;
+41          format FN best12. ;
+42          format FP best12. ;
+43          format TN best12. ;
+44       input
+45                   study
+46                   TP
+47                   FN
+48                   FP
+49                   TN
+50       ;
+51       if _ERROR_ then call symputx('_EFIERR_',1);  /* set ERROR detection macro variable */
+52       run;
+33 rows created in WORK.DATA_INPUT from 
+C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\anadata\eg2-IVD-cc.csv.
+  
+  
+  
+53   proc import out=par_all_wide
+54   datafile =
+54 ! "C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\anadata\ml-par-IVD.csv"
+55   dbms = csv replace;
+56   getnames = yes;
+57   run;
+58    /**********************************************************************
+59    *   PRODUCT:   SAS
+60    *   VERSION:   9.4
+61    *   CREATOR:   External File Interface
+62    *   DATE:      01JUN24
+63    *   DESC:      Generated SAS Datastep Code
+64    *   TEMPLATE SOURCE:  (None Specified.)
+65    ***********************************************************************/
+66       data WORK.PAR_ALL_WIDE    ;
+67       %let _EFIERR_ = 0; /* set the ERROR detection macro variable */
+68       infile
+68 ! 'C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\anadata\ml-par-IVD.csv'
+68 ! delimiter = ',' MISSOVER DSD lrecl=32767 firstobs=2 ;
+69          informat mu1 best32. ;
+70          informat mu2 best32. ;
+71          informat tau11 best32. ;
+72          informat tau22 best32. ;
+73          informat tau12 best32. ;
+74          format mu1 best12. ;
+75          format mu2 best12. ;
+76          format tau11 best12. ;
+77          format tau22 best12. ;
+78          format tau12 best12. ;
+79       input
+80                   mu1
+81                   mu2
+82                   tau11
+83                   tau22
+84                   tau12
+85       ;
+86       if _ERROR_ then call symputx('_EFIERR_',1);  /* set ERROR detection macro variable */
+87       run;
+1 rows created in WORK.PAR_ALL_WIDE from 
+C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\anadata\ml-par-IVD.csv.
+  
+  
+  
+88   
+89   
+90   /*LOAD MACRO OF CALCULATING BIAS*/
+91   %include
+91 ! "C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\SAS\macro_bias2.sas";
+364  
+365  /*SIMULATION-BASED WORST-CASE BOUND AND STORE RESULTS*/
+366  /*SET HOW MANY TIMES FOR REPEAT*/
+367  %let rr = 1;
+368  /*SET WHETHER TO PRINT THE OPTMODEL RESULT*/
+369  %let pl = 1;
+370  /*SET SEED*/
+371  %let seedn = 2008;
+372  /*SET HOW MANY RANDOM VARIABLES TO USE*/
+373  
+374  %let kk = 1000;
+375  ods html file="IVDresult2-K&kk.-R&rr.eq.html"
+375! path="C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\SAS\ivd\";
+376  %let start_time = %sysfunc(datetime());
+377  %bias2(start=0.1, end=1, by=0.1, repeatn = &rr, dtin = data_input, dpar = par_all_wide,
+377! k=&kk, seed=&seedn, plvl = &pl, assumption = 1);
+WARNING: Multiple lengths were specified for the variable solstatus1 by input data set(s). This 
+         can cause truncation of data.
+378  %put **** Duration1 = %sysfunc(putn(%sysevalf(%sysfunc(datetime()) - &start_time),time8.))
+378! ****;
+**** Duration1 =  0:00:23 ****
+379  data result1; set repeat; as = 1; run;
+380  %let start_time = %sysfunc(datetime());
+381  %bias2(start=0.1, end=1, by=0.1, repeatn = &rr, dtin = data_input, dpar = par_all_wide,
+381! k=&kk, seed=&seedn, plvl = &pl, assumption = 2);
+WARNING: Multiple lengths were specified for the variable solstatus1 by input data set(s). This 
+         can cause truncation of data.
+WARNING: Multiple lengths were specified for the variable solstatus1 by input data set(s). This 
+         can cause truncation of data.
+WARNING: Multiple lengths were specified for the variable solstatus1 by input data set(s). This 
+         can cause truncation of data.
+WARNING: Multiple lengths were specified for the variable solstatus1 by input data set(s). This 
+         can cause truncation of data.
+WARNING: Multiple lengths were specified for the variable solstatus1 by input data set(s). This 
+         can cause truncation of data.
+382  %put **** Duration2 = %sysfunc(putn(%sysevalf(%sysfunc(datetime()) - &start_time),time8.))
+382! ****;
+**** Duration2 =  0:01:31 ****
+383  data result2; set repeat; as = 2; run;
+384  %let start_time = %sysfunc(datetime());
+385  %bias2(start=0.1, end=1, by=0.1, repeatn = &rr, dtin = data_input, dpar = par_all_wide,
+385! k=&kk, seed=&seedn, plvl = &pl, assumption = 3);
+WARNING: Multiple lengths were specified for the variable solstatus1 by input data set(s). This 
+         can cause truncation of data.
+WARNING: Multiple lengths were specified for the variable solstatus2 by input data set(s). This 
+         can cause truncation of data.
+386  %put **** Duration2 = %sysfunc(putn(%sysevalf(%sysfunc(datetime()) - &start_time),time8.))
+386! ****;
+**** Duration2 =  0:00:26 ****
+387  data result3; set repeat; as = 3; run;
+388  data result; set result1 result2 result3; run;
+WARNING: Multiple lengths were specified for the variable solstatus2 by input data set(s). This 
+         can cause truncation of data.
+389  proc export data=result
+390      outfile="C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\SAS\ivd\IVDresu
+390! lt2-K&kk.-R&rr.eq.csv"
+391      dbms=csv replace;
+392  run;
+393   /**********************************************************************
+394   *   PRODUCT:   SAS
+395   *   VERSION:   9.4
+396   *   CREATOR:   External File Interface
+397   *   DATE:      01JUN24
+398   *   DESC:      Generated SAS Datastep Code
+399   *   TEMPLATE SOURCE:  (None Specified.)
+400   ***********************************************************************/
+401      data _null_;
+402      %let _EFIERR_ = 0; /* set the ERROR detection macro variable */
+403      %let _EFIREC_ = 0;     /* clear export record count macro variable */
+404      file
+404! 'C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\SAS\ivd\IVDresult2-K1000-R1
+404! eq.csv' delimiter=',' DSD DROPOVER lrecl=32767;
+405      if _n_ = 1 then        /* write column names or labels */
+406       do;
+407         put
+408            "p"
+409         ','
+410            "k"
+411         ','
+412            "maxb"
+413         ','
+414            "status1"
+415         ','
+416            "solstatus1"
+417         ','
+418            "minb"
+419         ','
+420            "status2"
+421         ','
+422            "solstatus2"
+423         ','
+424            "group"
+425         ','
+426            "as"
+427         ;
+428       end;
+429     set  RESULT   end=EFIEOD;
+430         format p best12. ;
+431         format k best12. ;
+432         format maxb best12. ;
+433         format status1 $2. ;
+434         format solstatus1 $7. ;
+435         format minb best12. ;
+436         format status2 $2. ;
+437         format solstatus2 $7. ;
+438         format group best12. ;
+439         format as best12. ;
+440       do;
+441         EFIOUT + 1;
+442         put p @;
+443         put k @;
+444         put maxb @;
+445         put status1 $ @;
+446         put solstatus1 $ @;
+447         put minb @;
+448         put status2 $ @;
+449         put solstatus2 $ @;
+450         put group @;
+451         put as ;
+452         ;
+453       end;
+454      if _ERROR_ then call symputx('_EFIERR_',1);  /* set ERROR detection macro variable */
+455      if EFIEOD then call symputx('_EFIREC_',EFIOUT);
+456      run;
+30 records created in 
+C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\SAS\ivd\IVDresult2-K1000-R1eq.csv
+ from RESULT.
+  
+  
+457  
+458  %let kk = 2000;
+459  ods html file="IVDresult2-K&kk.-R&rr.eq.html"
+459! path="C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\SAS\ivd\";
+460  %let start_time = %sysfunc(datetime());
+461  %bias2(start=0.1, end=1, by=0.1, repeatn = &rr, dtin = data_input, dpar = par_all_wide,
+461! k=&kk, seed=&seedn, plvl = &pl, assumption = 1);
+WARNING: Multiple lengths were specified for the variable solstatus2 by input data set(s). This 
+         can cause truncation of data.
+462  %put **** Duration1 = %sysfunc(putn(%sysevalf(%sysfunc(datetime()) - &start_time),time8.))
+462! ****;
+**** Duration1 =  0:00:51 ****
+463  data result1; set repeat; as = 1; run;
+464  %let start_time = %sysfunc(datetime());
+465  %bias2(start=0.1, end=1, by=0.1, repeatn = &rr, dtin = data_input, dpar = par_all_wide,
+465! k=&kk, seed=&seedn, plvl = &pl, assumption = 2);
+WARNING: Multiple lengths were specified for the variable solstatus2 by input data set(s). This 
+         can cause truncation of data.
+WARNING: Multiple lengths were specified for the variable solstatus2 by input data set(s). This 
+         can cause truncation of data.
+WARNING: Multiple lengths were specified for the variable solstatus2 by input data set(s). This 
+         can cause truncation of data.
+WARNING: Multiple lengths were specified for the variable solstatus2 by input data set(s). This 
+         can cause truncation of data.
+WARNING: Multiple lengths were specified for the variable solstatus2 by input data set(s). This 
+         can cause truncation of data.
+WARNING: Multiple lengths were specified for the variable solstatus2 by input data set(s). This 
+         can cause truncation of data.
+WARNING: Multiple lengths were specified for the variable solstatus2 by input data set(s). This 
+         can cause truncation of data.
+466  %put **** Duration2 = %sysfunc(putn(%sysevalf(%sysfunc(datetime()) - &start_time),time8.))
+466! ****;
+**** Duration2 =  0:03:11 ****
+467  data result2; set repeat; as = 2; run;
+468  %let start_time = %sysfunc(datetime());
+469  %bias2(start=0.1, end=1, by=0.1, repeatn = &rr, dtin = data_input, dpar = par_all_wide,
+469! k=&kk, seed=&seedn, plvl = &pl, assumption = 3);
+WARNING: Multiple lengths were specified for the variable solstatus1 by input data set(s). This 
+         can cause truncation of data.
+WARNING: Multiple lengths were specified for the variable solstatus2 by input data set(s). This 
+         can cause truncation of data.
+470  %put **** Duration2 = %sysfunc(putn(%sysevalf(%sysfunc(datetime()) - &start_time),time8.))
+470! ****;
+**** Duration2 =  0:00:49 ****
+471  data result3; set repeat; as = 3; run;
+472  data result; set result1 result2 result3; run;
+WARNING: Multiple lengths were specified for the variable solstatus1 by input data set(s). This 
+         can cause truncation of data.
+473  proc export data=result
+474      outfile="C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\SAS\ivd\IVDresu
+474! lt2-K&kk.-R&rr.eq.csv"
+475      dbms=csv replace;
+476  run;
+477   /**********************************************************************
+478   *   PRODUCT:   SAS
+479   *   VERSION:   9.4
+480   *   CREATOR:   External File Interface
+481   *   DATE:      01JUN24
+482   *   DESC:      Generated SAS Datastep Code
+483   *   TEMPLATE SOURCE:  (None Specified.)
+484   ***********************************************************************/
+485      data _null_;
+486      %let _EFIERR_ = 0; /* set the ERROR detection macro variable */
+487      %let _EFIREC_ = 0;     /* clear export record count macro variable */
+488      file
+488! 'C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\SAS\ivd\IVDresult2-K2000-R1
+488! eq.csv' delimiter=',' DSD DROPOVER lrecl=32767;
+489      if _n_ = 1 then        /* write column names or labels */
+490       do;
+491         put
+492            "p"
+493         ','
+494            "k"
+495         ','
+496            "maxb"
+497         ','
+498            "status1"
+499         ','
+500            "solstatus1"
+501         ','
+502            "minb"
+503         ','
+504            "status2"
+505         ','
+506            "solstatus2"
+507         ','
+508            "group"
+509         ','
+510            "as"
+511         ;
+512       end;
+513     set  RESULT   end=EFIEOD;
+514         format p best12. ;
+515         format k best12. ;
+516         format maxb best12. ;
+517         format status1 $2. ;
+518         format solstatus1 $7. ;
+519         format minb best12. ;
+520         format status2 $2. ;
+521         format solstatus2 $7. ;
+522         format group best12. ;
+523         format as best12. ;
+524       do;
+525         EFIOUT + 1;
+526         put p @;
+527         put k @;
+528         put maxb @;
+529         put status1 $ @;
+530         put solstatus1 $ @;
+531         put minb @;
+532         put status2 $ @;
+533         put solstatus2 $ @;
+534         put group @;
+535         put as ;
+536         ;
+537       end;
+538      if _ERROR_ then call symputx('_EFIERR_',1);  /* set ERROR detection macro variable */
+539      if EFIEOD then call symputx('_EFIREC_',EFIOUT);
+540      run;
+30 records created in 
+C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\SAS\ivd\IVDresult2-K2000-R1eq.csv
+ from RESULT.
+  
+  
+541  
+542  %let kk = 5000;
+543  ods html file="IVDresult2-K&kk.-R&rr.eq.html"
+543! path="C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\SAS\ivd\";
+544  %let start_time = %sysfunc(datetime());
+545  %bias2(start=0.1, end=1, by=0.1, repeatn = &rr, dtin = data_input, dpar = par_all_wide,
+545! k=&kk, seed=&seedn, plvl = &pl, assumption = 1);
+546  %put **** Duration1 = %sysfunc(putn(%sysevalf(%sysfunc(datetime()) - &start_time),time8.))
+546! ****;
+**** Duration1 =  0:02:02 ****
+547  data result1; set repeat; as = 1; run;
+548  %let start_time = %sysfunc(datetime());
+549  %bias2(start=0.1, end=1, by=0.1, repeatn = &rr, dtin = data_input, dpar = par_all_wide,
+549! k=&kk, seed=&seedn, plvl = &pl, assumption = 2);
+550  %put **** Duration2 = %sysfunc(putn(%sysevalf(%sysfunc(datetime()) - &start_time),time8.))
+550! ****;
+**** Duration2 =  0:07:50 ****
+551  data result2; set repeat; as = 2; run;
+552  %let start_time = %sysfunc(datetime());
+553  %bias2(start=0.1, end=1, by=0.1, repeatn = &rr, dtin = data_input, dpar = par_all_wide,
+553! k=&kk, seed=&seedn, plvl = &pl, assumption = 3);
+554  %put **** Duration2 = %sysfunc(putn(%sysevalf(%sysfunc(datetime()) - &start_time),time8.))
+554! ****;
+**** Duration2 =  0:02:03 ****
+555  data result3; set repeat; as = 3; run;
+556  data result; set result1 result2 result3; run;
+WARNING: Multiple lengths were specified for the variable solstatus1 by input data set(s). This 
+         can cause truncation of data.
+WARNING: Multiple lengths were specified for the variable solstatus2 by input data set(s). This 
+         can cause truncation of data.
+557  proc export data=result
+558      outfile="C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\SAS\ivd\IVDresu
+558! lt2-K&kk.-R&rr.eq.csv"
+559      dbms=csv replace;
+560  run;
+561   /**********************************************************************
+562   *   PRODUCT:   SAS
+563   *   VERSION:   9.4
+564   *   CREATOR:   External File Interface
+565   *   DATE:      01JUN24
+566   *   DESC:      Generated SAS Datastep Code
+567   *   TEMPLATE SOURCE:  (None Specified.)
+568   ***********************************************************************/
+569      data _null_;
+570      %let _EFIERR_ = 0; /* set the ERROR detection macro variable */
+571      %let _EFIREC_ = 0;     /* clear export record count macro variable */
+572      file
+572! 'C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\SAS\ivd\IVDresult2-K5000-R1
+572! eq.csv' delimiter=',' DSD DROPOVER lrecl=32767;
+573      if _n_ = 1 then        /* write column names or labels */
+574       do;
+575         put
+576            "p"
+577         ','
+578            "k"
+579         ','
+580            "maxb"
+581         ','
+582            "status1"
+583         ','
+584            "solstatus1"
+585         ','
+586            "minb"
+587         ','
+588            "status2"
+589         ','
+590            "solstatus2"
+591         ','
+592            "group"
+593         ','
+594            "as"
+595         ;
+596       end;
+597     set  RESULT   end=EFIEOD;
+598         format p best12. ;
+599         format k best12. ;
+600         format maxb best12. ;
+601         format status1 $2. ;
+602         format solstatus1 $7. ;
+603         format minb best12. ;
+604         format status2 $2. ;
+605         format solstatus2 $7. ;
+606         format group best12. ;
+607         format as best12. ;
+608       do;
+609         EFIOUT + 1;
+610         put p @;
+611         put k @;
+612         put maxb @;
+613         put status1 $ @;
+614         put solstatus1 $ @;
+615         put minb @;
+616         put status2 $ @;
+617         put solstatus2 $ @;
+618         put group @;
+619         put as ;
+620         ;
+621       end;
+622      if _ERROR_ then call symputx('_EFIERR_',1);  /* set ERROR detection macro variable */
+623      if EFIEOD then call symputx('_EFIREC_',EFIOUT);
+624      run;
+30 records created in 
+C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\SAS\ivd\IVDresult2-K5000-R1eq.csv
+ from RESULT.
+  
+  
+625  
+626  %let kk = 20000;
+627  ods html file="IVDresult2-K&kk.-R&rr.eq.html"
+627! path="C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\SAS\ivd\";
+628  %let start_time = %sysfunc(datetime());
+629  %bias2(start=0.1, end=1, by=0.1, repeatn = &rr, dtin = data_input, dpar = par_all_wide,
+629! k=&kk, seed=&seedn, plvl = &pl, assumption = 1);
+630  %put **** Duration1 = %sysfunc(putn(%sysevalf(%sysfunc(datetime()) - &start_time),time8.))
+630! ****;
+**** Duration1 =  0:08:53 ****
+631  data result1; set repeat; as = 1; run;
+632  %let start_time = %sysfunc(datetime());
+633  %bias2(start=0.1, end=1, by=0.1, repeatn = &rr, dtin = data_input, dpar = par_all_wide,
+633! k=&kk, seed=&seedn, plvl = &pl, assumption = 2);
+WARNING: Multiple lengths were specified for the variable solstatus1 by input data set(s). This 
+         can cause truncation of data.
+WARNING: Multiple lengths were specified for the variable solstatus2 by input data set(s). This 
+         can cause truncation of data.
+WARNING: Multiple lengths were specified for the variable solstatus1 by input data set(s). This 
+         can cause truncation of data.
+634  %put **** Duration2 = %sysfunc(putn(%sysevalf(%sysfunc(datetime()) - &start_time),time8.))
+634! ****;
+**** Duration2 =  0:30:18 ****
+635  data result2; set repeat; as = 2; run;
+636  %let start_time = %sysfunc(datetime());
+637  %bias2(start=0.1, end=1, by=0.1, repeatn = &rr, dtin = data_input, dpar = par_all_wide,
+637! k=&kk, seed=&seedn, plvl = &pl, assumption = 3);
+WARNING: Multiple lengths were specified for the variable solstatus1 by input data set(s). This 
+         can cause truncation of data.
+638  %put **** Duration2 = %sysfunc(putn(%sysevalf(%sysfunc(datetime()) - &start_time),time8.))
+638! ****;
+**** Duration2 =  0:08:43 ****
+639  data result3; set repeat; as = 3; run;
+640  data result; set result1 result2 result3; run;
+641  proc export data=result
+642      outfile="C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\SAS\ivd\IVDresu
+642! lt2-K&kk.-R&rr.eq.csv"
+643      dbms=csv replace;
+644  run;
+645   /**********************************************************************
+646   *   PRODUCT:   SAS
+647   *   VERSION:   9.4
+648   *   CREATOR:   External File Interface
+649   *   DATE:      01JUN24
+650   *   DESC:      Generated SAS Datastep Code
+651   *   TEMPLATE SOURCE:  (None Specified.)
+652   ***********************************************************************/
+653      data _null_;
+654      %let _EFIERR_ = 0; /* set the ERROR detection macro variable */
+655      %let _EFIREC_ = 0;     /* clear export record count macro variable */
+656      file
+656! 'C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\SAS\ivd\IVDresult2-K20000-R
+656! 1eq.csv' delimiter=',' DSD DROPOVER lrecl=32767;
+657      if _n_ = 1 then        /* write column names or labels */
+658       do;
+659         put
+660            "p"
+661         ','
+662            "k"
+663         ','
+664            "maxb"
+665         ','
+666            "status1"
+667         ','
+668            "solstatus1"
+669         ','
+670            "minb"
+671         ','
+672            "status2"
+673         ','
+674            "solstatus2"
+675         ','
+676            "group"
+677         ','
+678            "as"
+679         ;
+680       end;
+681     set  RESULT   end=EFIEOD;
+682         format p best12. ;
+683         format k best12. ;
+684         format maxb best12. ;
+685         format status1 $2. ;
+686         format solstatus1 $13. ;
+687         format minb best12. ;
+688         format status2 $2. ;
+689         format solstatus2 $13. ;
+690         format group best12. ;
+691         format as best12. ;
+692       do;
+693         EFIOUT + 1;
+694         put p @;
+695         put k @;
+696         put maxb @;
+697         put status1 $ @;
+698         put solstatus1 $ @;
+699         put minb @;
+700         put status2 $ @;
+701         put solstatus2 $ @;
+702         put group @;
+703         put as ;
+704         ;
+705       end;
+706      if _ERROR_ then call symputx('_EFIERR_',1);  /* set ERROR detection macro variable */
+707      if EFIEOD then call symputx('_EFIREC_',EFIOUT);
+708      run;
+30 records created in 
+C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\SAS\ivd\IVDresult2-K20000-R1eq.cs
+v from RESULT.
+  
+  
+709  
+710  ods html close;
+711  
+712  proc printto; run;

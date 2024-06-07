@@ -1,0 +1,560 @@
+1007  
+1008  /*CLOSE ALL NOTES*/
+1009  proc datasets library=work kill noprint;
+1009!                                          quit;
+1010  ods _all_ close;
+1011  options NONOTES;
+1012  
+1013  
+1014  
+1015  /*EXAMPLE 2 IN MAIN: TROPNIN*/
+1016  proc import out=data_input
+1017  datafile =
+1017! "C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\anadata\eg2-trop-cc.csv"
+1018  dbms = csv replace;
+1019  getnames = yes;
+1020  run;
+1021   /**********************************************************************
+1022   *   PRODUCT:   SAS
+1023   *   VERSION:   9.4
+1024   *   CREATOR:   External File Interface
+1025   *   DATE:      31MAY24
+1026   *   DESC:      Generated SAS Datastep Code
+1027   *   TEMPLATE SOURCE:  (None Specified.)
+1028   ***********************************************************************/
+1029      data WORK.DATA_INPUT    ;
+1030      %let _EFIERR_ = 0; /* set the ERROR detection macro variable */
+1031      infile
+1031! 'C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\anadata\eg2-trop-cc.csv'
+1031! delimiter = ',' MISSOVER DSD lrecl=32767 firstobs=2 ;
+1032         informat study best32. ;
+1033         informat TP best32. ;
+1034         informat FP best32. ;
+1035         informat FN best32. ;
+1036         informat TN best32. ;
+1037         format study best12. ;
+1038         format TP best12. ;
+1039         format FP best12. ;
+1040         format FN best12. ;
+1041         format TN best12. ;
+1042      input
+1043                  study
+1044                  TP
+1045                  FP
+1046                  FN
+1047                  TN
+1048      ;
+1049      if _ERROR_ then call symputx('_EFIERR_',1);  /* set ERROR detection macro variable */
+1050      run;
+20 rows created in WORK.DATA_INPUT from 
+C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\anadata\eg2-trop-cc.csv.
+  
+  
+  
+1051  proc import out=par_all_wide
+1052  datafile =
+1052! "C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\anadata\ml-par-trop.csv"
+1053  dbms = csv replace;
+1054  getnames = yes;
+1055  run;
+1056   /**********************************************************************
+1057   *   PRODUCT:   SAS
+1058   *   VERSION:   9.4
+1059   *   CREATOR:   External File Interface
+1060   *   DATE:      31MAY24
+1061   *   DESC:      Generated SAS Datastep Code
+1062   *   TEMPLATE SOURCE:  (None Specified.)
+1063   ***********************************************************************/
+1064      data WORK.PAR_ALL_WIDE    ;
+1065      %let _EFIERR_ = 0; /* set the ERROR detection macro variable */
+1066      infile
+1066! 'C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\anadata\ml-par-trop.csv'
+1066! delimiter = ',' MISSOVER DSD lrecl=32767 firstobs=2 ;
+1067         informat mu1 best32. ;
+1068         informat mu2 best32. ;
+1069         informat tau11 best32. ;
+1070         informat tau22 best32. ;
+1071         informat tau12 best32. ;
+1072         format mu1 best12. ;
+1073         format mu2 best12. ;
+1074         format tau11 best12. ;
+1075         format tau22 best12. ;
+1076         format tau12 best12. ;
+1077      input
+1078                  mu1
+1079                  mu2
+1080                  tau11
+1081                  tau22
+1082                  tau12
+1083      ;
+1084      if _ERROR_ then call symputx('_EFIERR_',1);  /* set ERROR detection macro variable */
+1085      run;
+1 rows created in WORK.PAR_ALL_WIDE from 
+C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\anadata\ml-par-trop.csv.
+  
+  
+  
+1086  
+1087  
+1088  /*LOAD MACRO OF CALCULATING BIAS*/
+1089  %include
+1089! "C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\SAS\macro_bias2.sas";
+1362  
+1363  /*SIMULATION-BASED WORST-CASE BOUND AND STORE RESULTS*/
+1364  /*SET HOW MANY TIMES FOR REPEAT*/
+1365  %let rr = 1;
+1366  /*SET WHETHER TO PRINT THE OPTMODEL RESULT*/
+1367  %let pl = 1;
+1368  /*SET SEED*/
+1369  %let seedn = 2000;
+1370  /*SET HOW MANY RANDOM VARIABLES TO USE*/
+1371  
+1372  %let kk = 1000;
+1373  ods html file="TROPresult2-K&kk.-R&rr.eq.html"
+1373! path="C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\SAS\trop\";
+1374  %let start_time = %sysfunc(datetime());
+1375  %bias2(start=0.1, end=1, by=0.1, repeatn = &rr, dtin = data_input, dpar = par_all_wide,
+1375! k=&kk, seed=&seedn, plvl = &pl, assumption = 1);
+WARNING: Multiple lengths were specified for the variable solstatus2 by input data set(s). This 
+         can cause truncation of data.
+WARNING: Multiple lengths were specified for the variable solstatus1 by input data set(s). This 
+         can cause truncation of data.
+WARNING: Multiple lengths were specified for the variable solstatus2 by input data set(s). This 
+         can cause truncation of data.
+1376  %put **** Duration1 = %sysfunc(putn(%sysevalf(%sysfunc(datetime()) - &start_time),time8.))
+1376!  ****;
+**** Duration1 =  0:00:19 ****
+1377  data result1; set repeat; as = 1; run;
+1378  %let start_time = %sysfunc(datetime());
+1379  %bias2(start=0.1, end=1, by=0.1, repeatn = &rr, dtin = data_input, dpar = par_all_wide,
+1379! k=&kk, seed=&seedn, plvl = &pl, assumption = 2);
+WARNING: Multiple lengths were specified for the variable solstatus1 by input data set(s). This 
+         can cause truncation of data.
+WARNING: Multiple lengths were specified for the variable solstatus2 by input data set(s). This 
+         can cause truncation of data.
+1380  %put **** Duration2 = %sysfunc(putn(%sysevalf(%sysfunc(datetime()) - &start_time),time8.))
+1380!  ****;
+**** Duration2 =  0:00:18 ****
+1381  data result2; set repeat; as = 2; run;
+1382  %let start_time = %sysfunc(datetime());
+1383  %bias2(start=0.1, end=1, by=0.1, repeatn = &rr, dtin = data_input, dpar = par_all_wide,
+1383! k=&kk, seed=&seedn, plvl = &pl, assumption = 3);
+WARNING: Multiple lengths were specified for the variable solstatus2 by input data set(s). This 
+         can cause truncation of data.
+WARNING: Multiple lengths were specified for the variable solstatus1 by input data set(s). This 
+         can cause truncation of data.
+WARNING: Multiple lengths were specified for the variable solstatus2 by input data set(s). This 
+         can cause truncation of data.
+1384  %put **** Duration2 = %sysfunc(putn(%sysevalf(%sysfunc(datetime()) - &start_time),time8.))
+1384!  ****;
+**** Duration2 =  0:00:18 ****
+1385  data result3; set repeat; as = 3; run;
+1386  data result; set result1 result2 result3; run;
+1387  proc export data=result
+1388      outfile="C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\SAS\trop\TROPr
+1388! esult2-K&kk.-R&rr.eq.csv"
+1389      dbms=csv replace;
+1390  run;
+1391   /**********************************************************************
+1392   *   PRODUCT:   SAS
+1393   *   VERSION:   9.4
+1394   *   CREATOR:   External File Interface
+1395   *   DATE:      31MAY24
+1396   *   DESC:      Generated SAS Datastep Code
+1397   *   TEMPLATE SOURCE:  (None Specified.)
+1398   ***********************************************************************/
+1399      data _null_;
+1400      %let _EFIERR_ = 0; /* set the ERROR detection macro variable */
+1401      %let _EFIREC_ = 0;     /* clear export record count macro variable */
+1402      file
+1402! 'C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\SAS\trop\TROPresult2-K1000
+1402! -R1eq.csv' delimiter=',' DSD DROPOVER lrecl=32767;
+1403      if _n_ = 1 then        /* write column names or labels */
+1404       do;
+1405         put
+1406            "p"
+1407         ','
+1408            "k"
+1409         ','
+1410            "maxb"
+1411         ','
+1412            "status1"
+1413         ','
+1414            "solstatus1"
+1415         ','
+1416            "minb"
+1417         ','
+1418            "status2"
+1419         ','
+1420            "solstatus2"
+1421         ','
+1422            "group"
+1423         ','
+1424            "as"
+1425         ;
+1426       end;
+1427     set  RESULT   end=EFIEOD;
+1428         format p best12. ;
+1429         format k best12. ;
+1430         format maxb best12. ;
+1431         format status1 $2. ;
+1432         format solstatus1 $7. ;
+1433         format minb best12. ;
+1434         format status2 $2. ;
+1435         format solstatus2 $7. ;
+1436         format group best12. ;
+1437         format as best12. ;
+1438       do;
+1439         EFIOUT + 1;
+1440         put p @;
+1441         put k @;
+1442         put maxb @;
+1443         put status1 $ @;
+1444         put solstatus1 $ @;
+1445         put minb @;
+1446         put status2 $ @;
+1447         put solstatus2 $ @;
+1448         put group @;
+1449         put as ;
+1450         ;
+1451       end;
+1452      if _ERROR_ then call symputx('_EFIERR_',1);  /* set ERROR detection macro variable */
+1453      if EFIEOD then call symputx('_EFIREC_',EFIOUT);
+1454      run;
+30 records created in 
+C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\SAS\trop\TROPresult2-K1000-R1eq.c
+sv from RESULT.
+  
+  
+1455  
+1456  %let kk = 2000;
+1457  ods html file="TROPresult2-K&kk.-R&rr.eq.html"
+1457! path="C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\SAS\trop\";
+1458  %let start_time = %sysfunc(datetime());
+1459  %bias2(start=0.1, end=1, by=0.1, repeatn = &rr, dtin = data_input, dpar = par_all_wide,
+1459! k=&kk, seed=&seedn, plvl = &pl, assumption = 1);
+WARNING: Multiple lengths were specified for the variable solstatus1 by input data set(s). This 
+         can cause truncation of data.
+WARNING: Multiple lengths were specified for the variable solstatus2 by input data set(s). This 
+         can cause truncation of data.
+1460  %put **** Duration1 = %sysfunc(putn(%sysevalf(%sysfunc(datetime()) - &start_time),time8.))
+1460!  ****;
+**** Duration1 =  0:00:35 ****
+1461  data result1; set repeat; as = 1; run;
+1462  %let start_time = %sysfunc(datetime());
+1463  %bias2(start=0.1, end=1, by=0.1, repeatn = &rr, dtin = data_input, dpar = par_all_wide,
+1463! k=&kk, seed=&seedn, plvl = &pl, assumption = 2);
+WARNING: Multiple lengths were specified for the variable solstatus2 by input data set(s). This 
+         can cause truncation of data.
+1464  %put **** Duration2 = %sysfunc(putn(%sysevalf(%sysfunc(datetime()) - &start_time),time8.))
+1464!  ****;
+**** Duration2 =  0:00:35 ****
+1465  data result2; set repeat; as = 2; run;
+1466  %let start_time = %sysfunc(datetime());
+1467  %bias2(start=0.1, end=1, by=0.1, repeatn = &rr, dtin = data_input, dpar = par_all_wide,
+1467! k=&kk, seed=&seedn, plvl = &pl, assumption = 3);
+WARNING: Multiple lengths were specified for the variable solstatus2 by input data set(s). This 
+         can cause truncation of data.
+1468  %put **** Duration2 = %sysfunc(putn(%sysevalf(%sysfunc(datetime()) - &start_time),time8.))
+1468!  ****;
+**** Duration2 =  0:00:35 ****
+1469  data result3; set repeat; as = 3; run;
+1470  data result; set result1 result2 result3; run;
+1471  proc export data=result
+1472      outfile="C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\SAS\trop\TROPr
+1472! esult2-K&kk.-R&rr.eq.csv"
+1473      dbms=csv replace;
+1474  run;
+1475   /**********************************************************************
+1476   *   PRODUCT:   SAS
+1477   *   VERSION:   9.4
+1478   *   CREATOR:   External File Interface
+1479   *   DATE:      31MAY24
+1480   *   DESC:      Generated SAS Datastep Code
+1481   *   TEMPLATE SOURCE:  (None Specified.)
+1482   ***********************************************************************/
+1483      data _null_;
+1484      %let _EFIERR_ = 0; /* set the ERROR detection macro variable */
+1485      %let _EFIREC_ = 0;     /* clear export record count macro variable */
+1486      file
+1486! 'C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\SAS\trop\TROPresult2-K2000
+1486! -R1eq.csv' delimiter=',' DSD DROPOVER lrecl=32767;
+1487      if _n_ = 1 then        /* write column names or labels */
+1488       do;
+1489         put
+1490            "p"
+1491         ','
+1492            "k"
+1493         ','
+1494            "maxb"
+1495         ','
+1496            "status1"
+1497         ','
+1498            "solstatus1"
+1499         ','
+1500            "minb"
+1501         ','
+1502            "status2"
+1503         ','
+1504            "solstatus2"
+1505         ','
+1506            "group"
+1507         ','
+1508            "as"
+1509         ;
+1510       end;
+1511     set  RESULT   end=EFIEOD;
+1512         format p best12. ;
+1513         format k best12. ;
+1514         format maxb best12. ;
+1515         format status1 $2. ;
+1516         format solstatus1 $7. ;
+1517         format minb best12. ;
+1518         format status2 $2. ;
+1519         format solstatus2 $7. ;
+1520         format group best12. ;
+1521         format as best12. ;
+1522       do;
+1523         EFIOUT + 1;
+1524         put p @;
+1525         put k @;
+1526         put maxb @;
+1527         put status1 $ @;
+1528         put solstatus1 $ @;
+1529         put minb @;
+1530         put status2 $ @;
+1531         put solstatus2 $ @;
+1532         put group @;
+1533         put as ;
+1534         ;
+1535       end;
+1536      if _ERROR_ then call symputx('_EFIERR_',1);  /* set ERROR detection macro variable */
+1537      if EFIEOD then call symputx('_EFIREC_',EFIOUT);
+1538      run;
+30 records created in 
+C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\SAS\trop\TROPresult2-K2000-R1eq.c
+sv from RESULT.
+  
+  
+1539  
+1540  %let kk = 5000;
+1541  ods html file="TROPresult2-K&kk.-R&rr.eq.html"
+1541! path="C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\SAS\trop\";
+1542  %let start_time = %sysfunc(datetime());
+1543  %bias2(start=0.1, end=1, by=0.1, repeatn = &rr, dtin = data_input, dpar = par_all_wide,
+1543! k=&kk, seed=&seedn, plvl = &pl, assumption = 1);
+WARNING: Multiple lengths were specified for the variable solstatus2 by input data set(s). This 
+         can cause truncation of data.
+1544  %put **** Duration1 = %sysfunc(putn(%sysevalf(%sysfunc(datetime()) - &start_time),time8.))
+1544!  ****;
+**** Duration1 =  0:01:26 ****
+1545  data result1; set repeat; as = 1; run;
+1546  %let start_time = %sysfunc(datetime());
+1547  %bias2(start=0.1, end=1, by=0.1, repeatn = &rr, dtin = data_input, dpar = par_all_wide,
+1547! k=&kk, seed=&seedn, plvl = &pl, assumption = 2);
+WARNING: Multiple lengths were specified for the variable solstatus2 by input data set(s). This 
+         can cause truncation of data.
+1548  %put **** Duration2 = %sysfunc(putn(%sysevalf(%sysfunc(datetime()) - &start_time),time8.))
+1548!  ****;
+**** Duration2 =  0:01:26 ****
+1549  data result2; set repeat; as = 2; run;
+1550  %let start_time = %sysfunc(datetime());
+1551  %bias2(start=0.1, end=1, by=0.1, repeatn = &rr, dtin = data_input, dpar = par_all_wide,
+1551! k=&kk, seed=&seedn, plvl = &pl, assumption = 3);
+WARNING: Multiple lengths were specified for the variable solstatus2 by input data set(s). This 
+         can cause truncation of data.
+1552  %put **** Duration2 = %sysfunc(putn(%sysevalf(%sysfunc(datetime()) - &start_time),time8.))
+1552!  ****;
+**** Duration2 =  0:01:26 ****
+1553  data result3; set repeat; as = 3; run;
+1554  data result; set result1 result2 result3; run;
+1555  proc export data=result
+1556      outfile="C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\SAS\trop\TROPr
+1556! esult2-K&kk.-R&rr.eq.csv"
+1557      dbms=csv replace;
+1558  run;
+1559   /**********************************************************************
+1560   *   PRODUCT:   SAS
+1561   *   VERSION:   9.4
+1562   *   CREATOR:   External File Interface
+1563   *   DATE:      31MAY24
+1564   *   DESC:      Generated SAS Datastep Code
+1565   *   TEMPLATE SOURCE:  (None Specified.)
+1566   ***********************************************************************/
+1567      data _null_;
+1568      %let _EFIERR_ = 0; /* set the ERROR detection macro variable */
+1569      %let _EFIREC_ = 0;     /* clear export record count macro variable */
+1570      file
+1570! 'C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\SAS\trop\TROPresult2-K5000
+1570! -R1eq.csv' delimiter=',' DSD DROPOVER lrecl=32767;
+1571      if _n_ = 1 then        /* write column names or labels */
+1572       do;
+1573         put
+1574            "p"
+1575         ','
+1576            "k"
+1577         ','
+1578            "maxb"
+1579         ','
+1580            "status1"
+1581         ','
+1582            "solstatus1"
+1583         ','
+1584            "minb"
+1585         ','
+1586            "status2"
+1587         ','
+1588            "solstatus2"
+1589         ','
+1590            "group"
+1591         ','
+1592            "as"
+1593         ;
+1594       end;
+1595     set  RESULT   end=EFIEOD;
+1596         format p best12. ;
+1597         format k best12. ;
+1598         format maxb best12. ;
+1599         format status1 $2. ;
+1600         format solstatus1 $7. ;
+1601         format minb best12. ;
+1602         format status2 $2. ;
+1603         format solstatus2 $7. ;
+1604         format group best12. ;
+1605         format as best12. ;
+1606       do;
+1607         EFIOUT + 1;
+1608         put p @;
+1609         put k @;
+1610         put maxb @;
+1611         put status1 $ @;
+1612         put solstatus1 $ @;
+1613         put minb @;
+1614         put status2 $ @;
+1615         put solstatus2 $ @;
+1616         put group @;
+1617         put as ;
+1618         ;
+1619       end;
+1620      if _ERROR_ then call symputx('_EFIERR_',1);  /* set ERROR detection macro variable */
+1621      if EFIEOD then call symputx('_EFIREC_',EFIOUT);
+1622      run;
+30 records created in 
+C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\SAS\trop\TROPresult2-K5000-R1eq.c
+sv from RESULT.
+  
+  
+1623  
+1624  %let kk = 20000;
+1625  ods html file="TROPresult2-K&kk.-R&rr.eq.html"
+1625! path="C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\SAS\trop\";
+1626  %let start_time = %sysfunc(datetime());
+1627  %bias2(start=0.1, end=1, by=0.1, repeatn = &rr, dtin = data_input, dpar = par_all_wide,
+1627! k=&kk, seed=&seedn, plvl = &pl, assumption = 1);
+WARNING: Multiple lengths were specified for the variable solstatus1 by input data set(s). This 
+         can cause truncation of data.
+WARNING: Multiple lengths were specified for the variable solstatus2 by input data set(s). This 
+         can cause truncation of data.
+1628  %put **** Duration1 = %sysfunc(putn(%sysevalf(%sysfunc(datetime()) - &start_time),time8.))
+1628!  ****;
+**** Duration1 =  0:05:49 ****
+1629  data result1; set repeat; as = 1; run;
+1630  %let start_time = %sysfunc(datetime());
+1631  %bias2(start=0.1, end=1, by=0.1, repeatn = &rr, dtin = data_input, dpar = par_all_wide,
+1631! k=&kk, seed=&seedn, plvl = &pl, assumption = 2);
+WARNING: Multiple lengths were specified for the variable solstatus2 by input data set(s). This 
+         can cause truncation of data.
+1632  %put **** Duration2 = %sysfunc(putn(%sysevalf(%sysfunc(datetime()) - &start_time),time8.))
+1632!  ****;
+**** Duration2 =  0:05:34 ****
+1633  data result2; set repeat; as = 2; run;
+1634  %let start_time = %sysfunc(datetime());
+1635  %bias2(start=0.1, end=1, by=0.1, repeatn = &rr, dtin = data_input, dpar = par_all_wide,
+1635! k=&kk, seed=&seedn, plvl = &pl, assumption = 3);
+WARNING: Multiple lengths were specified for the variable solstatus1 by input data set(s). This 
+         can cause truncation of data.
+WARNING: Multiple lengths were specified for the variable solstatus2 by input data set(s). This 
+         can cause truncation of data.
+1636  %put **** Duration2 = %sysfunc(putn(%sysevalf(%sysfunc(datetime()) - &start_time),time8.))
+1636!  ****;
+**** Duration2 =  0:05:03 ****
+1637  data result3; set repeat; as = 3; run;
+1638  data result; set result1 result2 result3; run;
+1639  proc export data=result
+1640      outfile="C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\SAS\trop\TROPr
+1640! esult2-K&kk.-R&rr.eq.csv"
+1641      dbms=csv replace;
+1642  run;
+1643   /**********************************************************************
+1644   *   PRODUCT:   SAS
+1645   *   VERSION:   9.4
+1646   *   CREATOR:   External File Interface
+1647   *   DATE:      31MAY24
+1648   *   DESC:      Generated SAS Datastep Code
+1649   *   TEMPLATE SOURCE:  (None Specified.)
+1650   ***********************************************************************/
+1651      data _null_;
+1652      %let _EFIERR_ = 0; /* set the ERROR detection macro variable */
+1653      %let _EFIREC_ = 0;     /* clear export record count macro variable */
+1654      file
+1654! 'C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\SAS\trop\TROPresult2-K2000
+1654! 0-R1eq.csv' delimiter=',' DSD DROPOVER lrecl=32767;
+1655      if _n_ = 1 then        /* write column names or labels */
+1656       do;
+1657         put
+1658            "p"
+1659         ','
+1660            "k"
+1661         ','
+1662            "maxb"
+1663         ','
+1664            "status1"
+1665         ','
+1666            "solstatus1"
+1667         ','
+1668            "minb"
+1669         ','
+1670            "status2"
+1671         ','
+1672            "solstatus2"
+1673         ','
+1674            "group"
+1675         ','
+1676            "as"
+1677         ;
+1678       end;
+1679     set  RESULT   end=EFIEOD;
+1680         format p best12. ;
+1681         format k best12. ;
+1682         format maxb best12. ;
+1683         format status1 $2. ;
+1684         format solstatus1 $7. ;
+1685         format minb best12. ;
+1686         format status2 $2. ;
+1687         format solstatus2 $7. ;
+1688         format group best12. ;
+1689         format as best12. ;
+1690       do;
+1691         EFIOUT + 1;
+1692         put p @;
+1693         put k @;
+1694         put maxb @;
+1695         put status1 $ @;
+1696         put solstatus1 $ @;
+1697         put minb @;
+1698         put status2 $ @;
+1699         put solstatus2 $ @;
+1700         put group @;
+1701         put as ;
+1702         ;
+1703       end;
+1704      if _ERROR_ then call symputx('_EFIERR_',1);  /* set ERROR detection macro variable */
+1705      if EFIEOD then call symputx('_EFIREC_',EFIOUT);
+1706      run;
+30 records created in 
+C:\Users\zhouy\Documents\GitHub-Bios\worstcase1-codes\DTA-meta\SAS\trop\TROPresult2-K20000-R1eq.
+csv from RESULT.
+  
+  
+1707  
+1708  proc printto; run;

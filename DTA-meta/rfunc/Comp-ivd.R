@@ -1,5 +1,5 @@
 ##
-## EXAMPLE 2 IVD DATA
+## EXAMPLE 2 TROPNIN DATA
 ##
 
 library(kableExtra)
@@ -25,26 +25,58 @@ par <- data.frame(
 
 ## METHOD OF ZHOU ET AL
 p.10 <- seq(1, 0.1, -0.1)
-zhou.mod1 <- sapply(p.10, function(p) {
-  opt2 <- try(dtametasa.rc(data=example2, p=p, c1.square0 = 0.5, beta.interval = c(0,2)))
-  if(inherits(opt2, "try-error")) rep(NA,3) else c(opt2$sauc.ci)
+
+## SAUC
+## c1=1,c2=0
+zhou.sauc1 <- sapply(p.10, function(p) {
+  opt <- try(dtametasa.fc(data=example2, p=p, c1.square = 1, beta.interval = c(0,2)))
+  if(inherits(opt, "try-error")) rep(NA,3) else c(opt$sauc.ci)  
 })
 
-zhou.mod2 <- sapply(p.10, function(p) {
-  opt2 <- try(dtametasa.fc(data=example2, p=p, c1.square = 0.5, beta.interval = c(0,2)))
-  if(inherits(opt2, "try-error")) rep(NA,3) else c(opt2$sauc.ci)  
+## c1=0,c2=1
+zhou.sauc2 <- sapply(p.10, function(p) {
+  opt <- try(dtametasa.fc(data=example2, p=p, c1.square = 0, beta.interval = c(0,2)))
+  if(inherits(opt, "try-error")) rep(NA,3) else c(opt$sauc.ci)  
+})
+
+## c1=0.5,c2=0.5
+zhou.sauc3 <- sapply(p.10, function(p) {
+  opt <- try(dtametasa.fc(data=example2, p=p, c1.square = 0.5, beta.interval = c(0,2)))
+  if(inherits(opt, "try-error")) rep(NA,3) else c(opt$sauc.ci)  
+})
+
+## ESTIMATE c1 c2
+zhou.sauc4 <- sapply(p.10, function(p) {
+  opt <- try(dtametasa.rc(data=example2, p=p, c1.square0 = 0.5, beta.interval = c(0,2)))
+  if(inherits(opt, "try-error")) rep(NA,3) else c(opt$sauc.ci)
+})
+
+## PARAMETERS
+## c1=1,c2=0
+zhou.par1 <- sapply(p.10, function(p) {
+  opt <- try(dtametasa.fc(data=example2, p=p, c1.square = 1, beta.interval = c(0,2)))
+  if(inherits(opt, "try-error")) rep(NA,5) else c(opt$par.all[1:5])  
+})
+
+## c1=0,c2=1
+zhou.par2 <- sapply(p.10, function(p) {
+  opt <- try(dtametasa.fc(data=example2, p=p, c1.square = 0, beta.interval = c(0,2)))
+  if(inherits(opt, "try-error")) rep(NA,5) else c(opt$par.all[1:5])  
+})
+
+## c1=0.5,c2=0.5
+zhou.par3 <- sapply(p.10, function(p) {
+  opt <- try(dtametasa.fc(data=example2, p=p, c1.square = 0.5, beta.interval = c(0,2)))
+  if(inherits(opt, "try-error")) rep(NA,5) else c(opt$par.all[1:5])  
+})
+
+## ESTIMATE c1 c2
+zhou.par4 <- sapply(p.10, function(p) {
+  opt <- try(dtametasa.rc(data=example2, p=p, c1.square0 = 0.5, beta.interval = c(0,2)))
+  if(inherits(opt, "try-error")) rep(NA,5) else c(opt$par.all[1:5])  
 })
 
 
-zhou.mod3 <- sapply(p.10, function(p) {
-  opt2 <- try(dtametasa.fc(data=example2, p=p, c1.square = 1, beta.interval = c(0,2)))
-  if(inherits(opt2, "try-error")) rep(NA,3) else c(opt2$sauc.ci)  
-})
-
-zhou.mod4 <- sapply(p.10, function(p) {
-  opt2 <- try(dtametasa.fc(data=example2, p=p, c1.square = 0, beta.interval = c(0,2)))
-  if(inherits(opt2, "try-error")) rep(NA,3) else c(opt2$sauc.ci)  
-})
 
 ## METHOD OF PIAO ET AL
 Piao.mod <- Piao2019(data = example2.2, init = c(unlist(par), -0.1, -0.1, rep(-0.1, 3)) )
@@ -58,5 +90,7 @@ Li.sauc <- SAUC(Li.mod$par[1:5])
 Li.p <- Li.mod$alpha
 df.li <- data.frame(p = Li.p, sauc = Li.sauc)
 
-save(zhou.mod1,zhou.mod2,zhou.mod3,zhou.mod4,df.piao,df.li,
+save(zhou.sauc1,zhou.sauc2,zhou.sauc3,zhou.sauc4,
+     zhou.par1,zhou.par2,zhou.par3,zhou.par4,
+     df.piao,df.li,
      file = "comp-ivd-dt.RData")
