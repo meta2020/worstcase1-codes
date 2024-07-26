@@ -95,7 +95,7 @@ dfl <- data.frame(
 )
 
 ## PLOT 2: ZHOU'S METHOD AND PROPOSED METHOD ----
-## SROC 
+## SROC
 srocc1 <- .plot.sorc.par(
   example2.2, zhou.par1,
   title = TeX("A. Zhou's method with $(a_1, a_2) = (1, 0)$"))
@@ -106,13 +106,13 @@ srocc3 <- .plot.sorc.par(
   example2.2, zhou.par3,
   title = TeX("C. Zhou's method with $a_1=a_2$"))
 srocd1 <- .plot.sorc.npar(
-  example2.2, par, df[df$as==1,], 
+  example2.2, par, df[df$as==1,],
   title = "D. Simulation-based lower bounds under Condition (D4.1)")
 srocd2 <- .plot.sorc.npar(
-  example2.2, par, df[df$as==2,], 
+  example2.2, par, df[df$as==2,],
   title = "E. Simulation-based lower bounds under Condition (D4.2)")
 srocd3 <- .plot.sorc.npar(
-  example2.2, par, df[df$as==3,], 
+  example2.2, par, df[df$as==3,],
   title = "F. Simulation-based lower bounds under Condition (D4.3)")
 
 ## SAUC
@@ -120,88 +120,46 @@ srocd3 <- .plot.sorc.npar(
 ldg2a <- c("Estimate without PB",
            "Simulation-based bound under Condition (D4.1)",
            "Zhou et al.'s method when a1=1 and a2=0",
-           "95% lower confidence interval of Zhou et al.'s method")
+           "95% lower confidence limit of Zhou et al.'s method")
 dfc1 <- data.frame(
   p = rep(df$p[1:10],4),
   est = c(dfl[dfl$grp %in% c("Estimate without PB","Condition (D4.1)"),"est"],
           zhou.sauc1[1,],zhou.sauc1[2,]),
   grp = rep(ldg2a, each=10)
 )
-p2a <- ggplot(dfc1, aes(x = p, y = est, color = grp, linetype = grp)) +
-  geom_line(size=1) +
-  scale_y_continuous(limits = c(0,1),n.breaks = 10, name = "SAUC") +
-  scale_x_reverse(n.breaks = 10, name="Marginal selection probability") + 
-  theme(panel.background = element_rect(fill = "white", colour = "grey50"),
-        panel.grid.major = element_line(colour = "grey87"),
-        legend.key = element_rect (fill = "white"),
-        legend.position = c(0.35, 0.25), 
-        legend.background = element_rect(fill = "white", color = "black"),
-        legend.title = element_blank())+
-  scale_colour_manual("",
-                      breaks = ldg2a,
-                      values = c("grey50","#e41a1c","#377eb8","#377eb8"))+
-  scale_linetype_manual("",
-                        breaks = ldg2a,
-                        values = c(2,1,1,3))+
-  ggtitle("G")
+p2a <- .plot.sauc.all(
+  dfc = dfc1, ldg=ldg2a, 
+  title = "G. Bounds for the SAUC given PB from sensitivity")
 
-## a1=0, SPECIFICITY 
+## a1=0, SPECIFICITY
 ldg2b <- c("Estimate without PB",
            "Simulation-based bound under Condition (D4.2)",
            "Zhou et al.'s method when a1=0 and a2=1",
-           "95% lower confidence interval of Zhou et al.'s method")
+           "95% lower confidence limit of Zhou et al.'s method")
 dfc2 <- data.frame(
   p = rep(df$p[1:10],4),
   est = c(dfl[dfl$grp %in% c("Estimate without PB","Condition (D4.2)"),"est"],
           zhou.sauc2[1,],zhou.sauc2[2,]),
   grp = rep(ldg2b, each=10)
 )
-p2b <- ggplot(dfc2, aes(x = p, y = est, color = grp, linetype = grp)) +
-  geom_line(size=1) +
-  scale_y_continuous(limits = c(0,1),n.breaks = 10, name = "SAUC") +
-  scale_x_reverse(n.breaks = 10, name="Marginal selection probability") + 
-  theme(panel.background = element_rect(fill = "white", colour = "grey50"),
-        panel.grid.major = element_line(colour = "grey87"),
-        legend.key = element_rect (fill = "white"),
-        legend.position = c(0.35, 0.25), 
-        legend.background = element_rect(fill = "white", color = "black"),
-        legend.title = element_blank())+
-  scale_colour_manual("",
-                      breaks = ldg2b,
-                      values = c("grey50","#e41a1c","#377eb8","#377eb8"))+
-  scale_linetype_manual("",
-                        breaks = ldg2b,
-                        values = c(2,1,1,3))+
-  ggtitle("H")
+p2b <- .plot.sauc.all(
+  dfc = dfc2, ldg=ldg2b, 
+  title = "H. Bounds for the SAUC given PB from specificity")
 
-## a1=a2, lnDOR 
+## a1=a2, lnDOR
 ldg2c <- c("Estimate without PB",
            "Simulation-based bound under Condition (D4.3)",
            "Zhou et al.'s method when a1=a2",
-           "95% lower confidence interval of Zhou et al.'s method")
+           "95% lower confidence limit of Zhou et al.'s method")
 dfc3 <- data.frame(
   p = rep(df$p[1:10],4),
   est = c(dfl[dfl$grp %in% c("Estimate without PB","Condition (D4.3)"),"est"],
           zhou.sauc3[1,],zhou.sauc3[2,]),
   grp = rep(ldg2c, each=10)
 )
-p2c <- ggplot(dfc3, aes(x = p, y = est, color = grp, linetype = grp)) +
-  geom_line(size=1) +
-  scale_y_continuous(limits = c(0,1),n.breaks = 10, name = "SAUC") +
-  scale_x_reverse(n.breaks = 10, name="Marginal selection probability") + 
-  theme(panel.background = element_rect(fill = "white", colour = "grey50"),
-        panel.grid.major = element_line(colour = "grey87"),
-        legend.key = element_rect (fill = "white"),
-        legend.position = c(0.35, 0.25), 
-        legend.background = element_rect(fill = "white", color = "black"),
-        legend.title = element_blank())+
-  scale_colour_manual("",
-                      breaks = ldg2c,
-                      values = c("grey50","#e41a1c","#377eb8","#377eb8"))+
-  scale_linetype_manual("",
-                        breaks = ldg2c,
-                        values = c(2,1,1,3))+
-  ggtitle("I")
+p2c <- .plot.sauc.all(
+  dfc = dfc3, ldg=ldg2c, 
+  title = "I. Bounds for the SAUC given PB from the lnDOR")
 
 p1 <- grid.arrange(srocc1, srocc2, srocc3, srocd1, srocd2, srocd3, p2a, p2b, p2c, ncol=3)
 ggsave(filename = "fig-tab/trop/eg2-trop2.eps", plot = p1, device = cairo_ps, width = 18, height = 18)
@@ -277,68 +235,27 @@ kbl(tab23,
     caption = "Example 1: the lower bounds of the SAUC by the simulation-based given different $K$.",
     label = "tab1",
     row.names = NA)  
+
 ## PLOT 3a: AS1 COMPARISON OF SETTING DIFFERENT K ----
 ## 
 dfk2a <- dfk2[dfk2$as==1,]
-p3a <- ggplot(dfk2a, aes(x = p, y = est, color = grp, linetype = grp)) +
-  geom_line(size=1) +
-  scale_y_continuous(limits = c(0.4,0.75),n.breaks = 7, name = "SAUC") +
-  scale_x_reverse(n.breaks = 10, name="Marginal selection probability") + 
-  theme(panel.background = element_rect(fill = "white", colour = "grey50"),
-        panel.grid.major = element_line(colour = "grey87"),
-        legend.key = element_rect (fill = "white"),
-        legend.position = c(0.3, 0.25), 
-        legend.background = element_rect(fill = "white", color = "black"),
-        legend.title = element_blank())+
-  scale_colour_manual("",
-                      breaks = lgd3,
-                      values = c("#4daf4a","#e41a1c","#984ea3","#ff7f00"))+
-  scale_linetype_manual("",
-                        breaks = lgd3,
-                        values = c(1,1,2,2))+
-  ggtitle("A. Lower bounds of the SAUC under Condition (D4.1)")
+p3a <- .plot.kest(
+  dfk=dfk2a, lgd=lgd3, ylim = seq(0.4,0.75,0.05),
+  title="A. Lower bounds of the SAUC under Condition (D4.1)")
 
 ## PLOT 3b: AS2 COMPARISON OF SETTING DIFFERENT K ----
 ## 
 dfk2b <- dfk2[dfk2$as==2,]
-p3b <- ggplot(dfk2b, aes(x = p, y = est, color = grp, linetype = grp)) +
-  geom_line(size=1) +
-  scale_y_continuous(limits = c(0.4,0.75),n.breaks = 7, name = "SAUC") +
-  scale_x_reverse(n.breaks = 10, name="Marginal selection probability") + 
-  theme(panel.background = element_rect(fill = "white", colour = "grey50"),
-        panel.grid.major = element_line(colour = "grey87"),
-        legend.key = element_rect (fill = "white"),
-        legend.position = c(0.3, 0.25), 
-        legend.background = element_rect(fill = "white", color = "black"),
-        legend.title = element_blank())+
-  scale_colour_manual("",
-                      breaks = lgd3,
-                      values = c("#4daf4a","#e41a1c","#984ea3","#ff7f00"))+
-  scale_linetype_manual("",
-                        breaks = lgd3,
-                        values = c(1,1,2,2))+
-  ggtitle("B. Lower bounds of the SAUC under Condition (D4.2)")
+p3b <- .plot.kest(
+  dfk=dfk2b, lgd=lgd3, ylim = seq(0.4,0.75,0.05),
+  title="B. Lower bounds of the SAUC under Condition (D4.2)")
 
 ## PLOT 3c: AS2 COMPARISON OF SETTING DIFFERENT K ----
 ## 
 dfk2c <- dfk2[dfk2$as==3,]
-p3c <- ggplot(dfk2c, aes(x = p, y = est, color = grp, linetype = grp)) +
-  geom_line(size=1) +
-  scale_y_continuous(limits = c(0.4,0.75),n.breaks = 7, name = "SAUC") +
-  scale_x_reverse(n.breaks = 10, name="Marginal selection probability") + 
-  theme(panel.background = element_rect(fill = "white", colour = "grey50"),
-        panel.grid.major = element_line(colour = "grey87"),
-        legend.key = element_rect (fill = "white"),
-        legend.position = c(0.3, 0.25), 
-        legend.background = element_rect(fill = "white", color = "black"),
-        legend.title = element_blank())+
-  scale_colour_manual("",
-                      breaks = lgd3,
-                      values = c("#4daf4a","#e41a1c","#984ea3","#ff7f00"))+
-  scale_linetype_manual("",
-                        breaks = lgd3,
-                        values = c(1,1,2,2))+
-  ggtitle("C. Lower bounds of the SAUC under Condition (D4.3)")
+p3c <- .plot.kest(
+  dfk=dfk2c, lgd=lgd3, ylim = seq(0.4,0.75,0.05),
+  title="C. Lower bounds of the SAUC under Condition (D4.3)")
 
 ## COMPARISON OF SETTING DIFFERENT K AND SAMPLES ----
 ##
@@ -361,53 +278,23 @@ dfr2$grp2 <- factor(dfr2$grp, levels = lgd3, ordered = TRUE)
 ## PLOT 3d: AS1 COMPARISON OF SETTING DIFFERENT K ----
 ## 
 dfr2a <- dfr2[dfr2$as==1,]
-p3d <- ggplot(dfr2a, aes(x=pp, y=est, fill=grp2)) + 
-  geom_boxplot(alpha = 0.5)+
-  scale_x_discrete(limits = rev(levels(dfr2a$pp)),name="Marginal selection probability") +
-  scale_y_continuous(limits = c(0.4,0.75),n.breaks = 7, name = "SAUC") +
-  theme(panel.background = element_rect(fill = "white", colour = "grey50"),
-        panel.grid.major = element_line(colour = "grey87"),
-        legend.key = element_rect (fill = "white"),
-        legend.position = c(0.3, 0.25), legend.background = element_rect(fill = "white", color = "black"),
-        legend.title = element_blank())+
-  scale_fill_manual("",
-                    breaks = lgd3,
-                    values = c("#4daf4a","#e41a1c","#984ea3","#ff7f00")) +
-  ggtitle("D. 10-time lower bounds of the SAUC under Condition (D4.1)")
+p3d <- .plot.kbox(
+  dfk=dfr2a, lgd=lgd3, ylim = seq(0.4,0.75,0.05),
+  title="D. 10-time lower bounds of the SAUC under Condition (D4.1)")
 
 ## PLOT 3e: AS2 COMPARISON OF SETTING DIFFERENT K ----
 ## 
 dfr2b <- dfr2[dfr2$as==2,]
-p3e <- ggplot(dfr2b, aes(x=pp, y=est, fill=grp2)) + 
-  geom_boxplot(alpha = 0.5)+
-  scale_x_discrete(limits = rev(levels(dfr2b$pp)),name="Marginal selection probability") +
-  scale_y_continuous(limits = c(0.4,0.75),n.breaks = 7, name = "SAUC") +
-  theme(panel.background = element_rect(fill = "white", colour = "grey50"),
-        panel.grid.major = element_line(colour = "grey87"),
-        legend.key = element_rect (fill = "white"),
-        legend.position = c(0.3, 0.25), legend.background = element_rect(fill = "white", color = "black"),
-        legend.title = element_blank())+
-  scale_fill_manual("",
-                    breaks = lgd3,
-                    values = c("#4daf4a","#e41a1c","#984ea3","#ff7f00")) +
-  ggtitle("E. 10-time lower bounds of the SAUC under Condition (D4.2)")
+p3e <- .plot.kbox(
+  dfk=dfr2b, lgd=lgd3, ylim = seq(0.4,0.75,0.05),
+  title="E. 10-time lower bounds of the SAUC under Condition (D4.2)")
 
 ## PLOT 3f: AS2 COMPARISON OF SETTING DIFFERENT K ----
 ## 
 dfr2c <- dfr2[dfr2$as==3,]
-p3f <- ggplot(dfr2c, aes(x=pp, y=est, fill=grp2)) + 
-  geom_boxplot(alpha = 0.5)+
-  scale_x_discrete(limits = rev(levels(dfr2c$pp)),name="Marginal selection probability") +
-  scale_y_continuous(limits = c(0.4,0.75),n.breaks = 7, name = "SAUC") +
-  theme(panel.background = element_rect(fill = "white", colour = "grey50"),
-        panel.grid.major = element_line(colour = "grey87"),
-        legend.key = element_rect (fill = "white"),
-        legend.position = c(0.3, 0.25), legend.background = element_rect(fill = "white", color = "black"),
-        legend.title = element_blank())+
-  scale_fill_manual("",
-                    breaks = lgd3,
-                    values = c("#4daf4a","#e41a1c","#984ea3","#ff7f00")) +
-  ggtitle("F. 10-time lower bounds of the SAUC under Condition (D4.3)")
+p3f <- .plot.kbox(
+  dfk=dfr2c, lgd=lgd3, ylim = seq(0.4,0.75,0.05),
+  title="F. 10-time lower bounds of the SAUC under Condition (D4.3)")
 p3 <- grid.arrange(p3a, p3b, p3c, p3d, p3e, p3f, ncol=3)
 ggsave(filename = "fig-tab/trop/eg2-k-trop.eps", plot = p3, device = cairo_ps, width = 18, height = 12)
 
